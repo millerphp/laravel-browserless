@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace MillerPHP\LaravelBrowserless\Responses;
 
-use Psr\Http\Message\ResponseInterface;
 use MillerPHP\LaravelBrowserless\Exceptions\DownloadException;
+use Psr\Http\Message\ResponseInterface;
 
 class DownloadResponse
 {
@@ -33,7 +33,7 @@ class DownloadResponse
     {
         try {
             $result = file_put_contents($path, $this->content());
-            
+
             if ($result === false) {
                 throw new \RuntimeException("Failed to save file to {$path}");
             }
@@ -52,6 +52,7 @@ class DownloadResponse
     public function saveAs(string $path): string
     {
         $this->save($path);
+
         return $path;
     }
 
@@ -96,12 +97,12 @@ class DownloadResponse
             throw new \RuntimeException('Headers have already been sent');
         }
 
-        $filename = $filename ?? 'download-' . date('Y-m-d-His');
+        $filename = $filename ?? 'download-'.date('Y-m-d-His');
         $contentType = $this->response->getHeaderLine('Content-Type') ?: 'application/octet-stream';
 
-        header('Content-Type: ' . $contentType);
-        header('Content-Disposition: attachment; filename="' . $filename . '"');
-        header('Content-Length: ' . $this->size());
+        header('Content-Type: '.$contentType);
+        header('Content-Disposition: attachment; filename="'.$filename.'"');
+        header('Content-Length: '.$this->size());
         header('Cache-Control: no-cache, no-store, must-revalidate');
         header('Pragma: no-cache');
         header('Expires: 0');
@@ -109,4 +110,4 @@ class DownloadResponse
         echo $this->content();
         exit;
     }
-} 
+}

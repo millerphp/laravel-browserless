@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace MillerPHP\LaravelBrowserless\Features;
 
-use MillerPHP\LaravelBrowserless\Contracts\ClientContract;
-use MillerPHP\LaravelBrowserless\Responses\SessionsResponse;
-use MillerPHP\LaravelBrowserless\Exceptions\SessionsException;
 use GuzzleHttp\Psr7\Request;
+use MillerPHP\LaravelBrowserless\Contracts\ClientContract;
+use MillerPHP\LaravelBrowserless\Exceptions\SessionsException;
+use MillerPHP\LaravelBrowserless\Responses\SessionsResponse;
 
 class Sessions
 {
@@ -28,7 +28,7 @@ class Sessions
         try {
             $request = new Request(
                 'GET',
-                $this->client->url() . '/sessions?token=' . $this->client->token(),
+                $this->client->url().'/sessions?token='.$this->client->token(),
                 [
                     'Content-Type' => 'application/json',
                     'Cache-Control' => 'no-cache',
@@ -40,4 +40,4 @@ class Sessions
             throw SessionsException::fromResponse($e);
         }
     }
-} 
+}

@@ -24,4 +24,4 @@ class ExecuteFunctionException extends BrowserlessException
     {
         return new self("Invalid function response: {$message}");
     }
-} 
+}

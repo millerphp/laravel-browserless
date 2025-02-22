@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace MillerPHP\LaravelBrowserless\Features;
 
-use MillerPHP\LaravelBrowserless\Contracts\ClientContract;
-use MillerPHP\LaravelBrowserless\Responses\ExecuteFunctionResponse;
-use MillerPHP\LaravelBrowserless\Exceptions\ExecuteFunctionException;
 use GuzzleHttp\Psr7\Request;
+use MillerPHP\LaravelBrowserless\Contracts\ClientContract;
+use MillerPHP\LaravelBrowserless\Exceptions\ExecuteFunctionException;
 use MillerPHP\LaravelBrowserless\Features\Concerns\HasQueryParameters;
+use MillerPHP\LaravelBrowserless\Responses\ExecuteFunctionResponse;
 
 class ExecuteFunction
 {
@@ -36,17 +36,19 @@ class ExecuteFunction
     public function code(string $code): self
     {
         $this->options['code'] = $code;
+
         return $this;
     }
 
     /**
      * Set context values for the code execution.
      *
-     * @param array<string,mixed> $context
+     * @param  array<string,mixed>  $context
      */
     public function context(array $context): self
     {
         $this->options['context'] = $context;
+
         return $this;
     }
 
@@ -56,6 +58,7 @@ class ExecuteFunction
     public function waitForNetworkIdle(bool $wait = true): self
     {
         $this->options['gotoOptions']['waitUntil'] = $wait ? 'networkidle0' : 'load';
+
         return $this;
     }
 
@@ -65,6 +68,7 @@ class ExecuteFunction
     public function timeout(int $milliseconds): self
     {
         $this->options['gotoOptions']['timeout'] = $milliseconds;
+
         return $this;
     }
 
@@ -77,17 +81,19 @@ class ExecuteFunction
             'username' => $username,
             'password' => $password,
         ];
+
         return $this;
     }
 
     /**
      * Set cookies for the page.
      *
-     * @param array<array{name: string, value: string, domain: string}> $cookies
+     * @param  array<array{name: string, value: string, domain: string}>  $cookies
      */
     public function cookies(array $cookies): self
     {
         $this->options['cookies'] = $cookies;
+
         return $this;
     }
 
@@ -97,23 +103,25 @@ class ExecuteFunction
     public function ignoreHTTPSErrors(bool $ignore = true): self
     {
         $this->options['ignoreHTTPSErrors'] = $ignore;
+
         return $this;
     }
 
     /**
      * Set multiple options at once.
      *
-     * @param array<string,mixed> $options
+     * @param  array<string,mixed>  $options
      */
     public function withOptions(array $options): self
     {
         $this->options = array_merge_recursive($this->options, $options);
+
         return $this;
     }
 
     /**
      * Set function execution context.
-     * 
+     *
      * @param array{
      *   isolateFromGlobalScope?: bool,
      *   returnByValue?: bool,
@@ -123,20 +131,22 @@ class ExecuteFunction
     public function executionContext(array $options): self
     {
         $this->options['executionContext'] = $options;
+
         return $this;
     }
 
     /**
      * Add external modules to import.
-     * 
-     * @param array{url: string, type?: string}[] $modules
+     *
+     * @param  array{url: string, type?: string}[]  $modules
      */
     public function addModules(array $modules): self
     {
-        if (!isset($this->options['modules'])) {
+        if (! isset($this->options['modules'])) {
             $this->options['modules'] = [];
         }
         $this->options['modules'] = array_merge($this->options['modules'], $modules);
+
         return $this;
     }
 
@@ -146,12 +156,13 @@ class ExecuteFunction
     public function evaluationTimeout(int $milliseconds): self
     {
         $this->options['evaluationTimeout'] = $milliseconds;
+
         return $this;
     }
 
     /**
      * Add pre-defined browser actions.
-     * 
+     *
      * @param array{
      *   type: 'click'|'type'|'select'|'hover',
      *   selector: string,
@@ -162,6 +173,7 @@ class ExecuteFunction
     public function browserActions(array $actions): self
     {
         $this->options['browserActions'] = $actions;
+
         return $this;
     }
 
@@ -171,6 +183,7 @@ class ExecuteFunction
     public function evaluateBeforeCode(string $code): self
     {
         $this->options['evaluateBeforeCode'] = $code;
+
         return $this;
     }
 
@@ -180,12 +193,13 @@ class ExecuteFunction
     public function evaluateAfterCode(string $code): self
     {
         $this->options['evaluateAfterCode'] = $code;
+
         return $this;
     }
 
     /**
      * Set debug options.
-     * 
+     *
      * @param array{
      *   console?: bool,
      *   network?: bool,
@@ -196,12 +210,13 @@ class ExecuteFunction
     public function debugOptions(array $options): self
     {
         $this->options['debugOptions'] = $options;
+
         return $this;
     }
 
     /**
      * Configure retry behavior.
-     * 
+     *
      * @param array{
      *   attempts?: int,
      *   delay?: int,
@@ -212,6 +227,7 @@ class ExecuteFunction
     public function retryOnFailure(array $options): self
     {
         $this->options['retryOnFailure'] = $options;
+
         return $this;
     }
 
@@ -221,12 +237,13 @@ class ExecuteFunction
     public function failureThreshold(int $threshold): self
     {
         $this->options['failureThreshold'] = $threshold;
+
         return $this;
     }
 
     /**
      * Add environment setup script.
-     * 
+     *
      * @param array{
      *   content: string,
      *   runBeforeLoad?: bool,
@@ -236,12 +253,13 @@ class ExecuteFunction
     public function setupScript(array $script): self
     {
         $this->options['setupScript'] = $script;
+
         return $this;
     }
 
     /**
      * Add environment cleanup script.
-     * 
+     *
      * @param array{
      *   content: string,
      *   runOnError?: bool,
@@ -251,12 +269,13 @@ class ExecuteFunction
     public function teardownScript(array $script): self
     {
         $this->options['teardownScript'] = $script;
+
         return $this;
     }
 
     /**
      * Configure execution environment.
-     * 
+     *
      * @param array{
      *   nodeVersion?: string,
      *   environment?: 'browser'|'node'|'worker',
@@ -276,12 +295,13 @@ class ExecuteFunction
     public function setExecutionEnvironment(array $options): self
     {
         $this->options['executionEnvironment'] = $options;
+
         return $this;
     }
 
     /**
      * Set memory management options.
-     * 
+     *
      * @param array{
      *   maxHeapSize?: int,
      *   gcInterval?: int,
@@ -301,12 +321,13 @@ class ExecuteFunction
     public function setMemoryManagement(array $options): self
     {
         $this->options['memoryManagement'] = $options;
+
         return $this;
     }
 
     /**
      * Configure code instrumentation and profiling.
-     * 
+     *
      * @param array{
      *   profiling?: array{
      *     enabled: bool,
@@ -334,12 +355,13 @@ class ExecuteFunction
     public function setCodeInstrumentation(array $options): self
     {
         $this->options['codeInstrumentation'] = $options;
+
         return $this;
     }
 
     /**
      * Control async execution behavior.
-     * 
+     *
      * @param array{
      *   concurrency?: array{
      *     maxParallel?: int,
@@ -367,12 +389,13 @@ class ExecuteFunction
     public function setAsyncBehavior(array $options): self
     {
         $this->options['asyncBehavior'] = $options;
+
         return $this;
     }
 
     /**
      * Set execution context isolation options.
-     * 
+     *
      * @param array{
      *   realm?: array{
      *     create?: bool,
@@ -395,12 +418,13 @@ class ExecuteFunction
     public function setContextIsolation(array $options): self
     {
         $this->options['contextIsolation'] = $options;
+
         return $this;
     }
 
     /**
      * Configure source map support.
-     * 
+     *
      * @param array{
      *   enabled: bool,
      *   inline?: bool,
@@ -413,12 +437,13 @@ class ExecuteFunction
     public function setSourceMapOptions(array $options): self
     {
         $this->options['sourceMapOptions'] = $options;
+
         return $this;
     }
 
     /**
      * Configure advanced debugging options.
-     * 
+     *
      * @param array{
      *   breakpoints?: array{
      *     location: string,
@@ -447,12 +472,13 @@ class ExecuteFunction
     public function setDebugOptions(array $options): self
     {
         $this->options['debugOptions'] = $options;
+
         return $this;
     }
 
     /**
      * Configure Web Worker management.
-     * 
+     *
      * @param array{
      *   maxWorkers?: int,
      *   terminationTimeout?: int,
@@ -479,12 +505,13 @@ class ExecuteFunction
     public function setWorkerOptions(array $options): self
     {
         $this->options['workerOptions'] = $options;
+
         return $this;
     }
 
     /**
      * Configure ES Module handling.
-     * 
+     *
      * @param array{
      *   importMap?: array{
      *     imports?: array<string,string>,
@@ -508,12 +535,13 @@ class ExecuteFunction
     public function setModuleOptions(array $options): self
     {
         $this->options['moduleOptions'] = $options;
+
         return $this;
     }
 
     /**
      * Configure JavaScript runtime settings.
-     * 
+     *
      * @param array{
      *   environment?: array{
      *     target?: 'es5'|'es2015'|'es2016'|'es2017'|'es2018'|'es2019'|'es2020'|'es2021',
@@ -543,12 +571,13 @@ class ExecuteFunction
     public function setRuntimeOptions(array $options): self
     {
         $this->options['runtimeOptions'] = $options;
+
         return $this;
     }
 
     /**
      * Configure execution lifecycle hooks.
-     * 
+     *
      * @param array{
      *   beforeExecution?: string,
      *   afterExecution?: string,
@@ -561,12 +590,13 @@ class ExecuteFunction
     public function setLifecycleHooks(array $options): self
     {
         $this->options['lifecycleHooks'] = $options;
+
         return $this;
     }
 
     /**
      * Set execution environment variables.
-     * 
+     *
      * @param array{
      *   env?: array<string,string>,
      *   args?: string[],
@@ -577,12 +607,13 @@ class ExecuteFunction
     public function setEnvironmentVariables(array $options): self
     {
         $this->options['environmentVariables'] = $options;
+
         return $this;
     }
 
     /**
      * Configure security policy settings.
-     * 
+     *
      * @param array{
      *   csp?: array{
      *     directives?: array<string,string[]>,
@@ -608,12 +639,13 @@ class ExecuteFunction
     public function setSecurityPolicy(array $options): self
     {
         $this->options['securityPolicy'] = $options;
+
         return $this;
     }
 
     /**
      * Configure network traffic interception.
-     * 
+     *
      * @param array{
      *   requests?: array{
      *     patterns?: array{
@@ -649,12 +681,13 @@ class ExecuteFunction
     public function setNetworkInterception(array $options): self
     {
         $this->options['networkInterception'] = $options;
+
         return $this;
     }
 
     /**
      * Configure resource management settings.
-     * 
+     *
      * @param array{
      *   cpu?: array{
      *     limit?: int,
@@ -686,12 +719,13 @@ class ExecuteFunction
     public function setResourceManagement(array $options): self
     {
         $this->options['resourceManagement'] = $options;
+
         return $this;
     }
 
     /**
      * Configure browser extension handling.
-     * 
+     *
      * @param array{
      *   extensions?: array{
      *     paths?: string[],
@@ -721,12 +755,13 @@ class ExecuteFunction
     public function setBrowserExtensions(array $options): self
     {
         $this->options['browserExtensions'] = $options;
+
         return $this;
     }
 
     /**
      * Configure browser automation settings.
-     * 
+     *
      * @param array{
      *   input?: array{
      *     keyboard?: array{
@@ -762,6 +797,7 @@ class ExecuteFunction
     public function setAutomationOptions(array $options): self
     {
         $this->options['automationOptions'] = $options;
+
         return $this;
     }
 
@@ -777,7 +813,7 @@ class ExecuteFunction
         try {
             $request = new Request(
                 'POST',
-                $this->buildQueryString($this->client->url() . '/function?token=' . $this->client->token()),
+                $this->buildQueryString($this->client->url().'/function?token='.$this->client->token()),
                 [
                     'Content-Type' => 'application/json',
                 ],
@@ -799,8 +835,8 @@ class ExecuteFunction
      */
     protected function validateOptions(): void
     {
-        if (!isset($this->options['code'])) {
+        if (! isset($this->options['code'])) {
             throw ExecuteFunctionException::invalidOptions('JavaScript code must be provided');
         }
     }
-} 
+}

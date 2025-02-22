@@ -24,4 +24,4 @@ class UnblockException extends BrowserlessException
     {
         return new self("Invalid unblock response: {$message}");
     }
-} 
+}

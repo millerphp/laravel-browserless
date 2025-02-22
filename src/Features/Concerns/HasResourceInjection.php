@@ -19,15 +19,16 @@ trait HasResourceInjection
      */
     public function addScriptTag(array $options): self
     {
-        if (!isset($options['url']) && !isset($options['path']) && !isset($options['content'])) {
+        if (! isset($options['url']) && ! isset($options['path']) && ! isset($options['content'])) {
             throw new \InvalidArgumentException('Script tag must have either url, path, or content');
         }
 
-        if (!isset($this->options['addScriptTag'])) {
+        if (! isset($this->options['addScriptTag'])) {
             $this->options['addScriptTag'] = [];
         }
 
         $this->options['addScriptTag'][] = $options;
+
         return $this;
     }
 
@@ -42,15 +43,16 @@ trait HasResourceInjection
      */
     public function addStyleTag(array $options): self
     {
-        if (!isset($options['url']) && !isset($options['path']) && !isset($options['content'])) {
+        if (! isset($options['url']) && ! isset($options['path']) && ! isset($options['content'])) {
             throw new \InvalidArgumentException('Style tag must have either url, path, or content');
         }
 
-        if (!isset($this->options['addStyleTag'])) {
+        if (! isset($this->options['addStyleTag'])) {
             $this->options['addStyleTag'] = [];
         }
 
         $this->options['addStyleTag'][] = $options;
+
         return $this;
     }
-} 
+}

@@ -4,28 +4,26 @@ declare(strict_types=1);
 
 namespace MillerPHP\LaravelBrowserless\Features;
 
-use MillerPHP\LaravelBrowserless\Contracts\ClientContract;
-use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
-use MillerPHP\LaravelBrowserless\Responses\PDFResponse;
 use GuzzleHttp\Psr7\Request;
+use MillerPHP\LaravelBrowserless\Contracts\ClientContract;
 use MillerPHP\LaravelBrowserless\Exceptions\PDFGenerationException;
-use MillerPHP\LaravelBrowserless\Features\Concerns\HasQueryParameters;
-use MillerPHP\LaravelBrowserless\Features\Concerns\HasOptions;
-use MillerPHP\LaravelBrowserless\Features\Concerns\HasNavigationOptions;
-use MillerPHP\LaravelBrowserless\Features\Concerns\HasCookieManagement;
-use MillerPHP\LaravelBrowserless\Features\Concerns\HasResourceInjection;
 use MillerPHP\LaravelBrowserless\Features\Concerns\HasAuthentication;
+use MillerPHP\LaravelBrowserless\Features\Concerns\HasCookieManagement;
+use MillerPHP\LaravelBrowserless\Features\Concerns\HasNavigationOptions;
+use MillerPHP\LaravelBrowserless\Features\Concerns\HasOptions;
+use MillerPHP\LaravelBrowserless\Features\Concerns\HasQueryParameters;
+use MillerPHP\LaravelBrowserless\Features\Concerns\HasResourceInjection;
 use MillerPHP\LaravelBrowserless\Features\Concerns\HasViewport;
+use MillerPHP\LaravelBrowserless\Responses\PDFResponse;
 
 class PDF
 {
-    use HasQueryParameters;
-    use HasOptions;
-    use HasNavigationOptions;
-    use HasCookieManagement;
-    use HasResourceInjection;
     use HasAuthentication;
+    use HasCookieManagement;
+    use HasNavigationOptions;
+    use HasOptions;
+    use HasQueryParameters;
+    use HasResourceInjection;
     use HasViewport;
 
     /**
@@ -52,6 +50,7 @@ class PDF
     public function html(string $html): self
     {
         $this->options['html'] = $html;
+
         return $this;
     }
 
@@ -61,6 +60,7 @@ class PDF
     public function url(string $url): self
     {
         $this->options['url'] = $url;
+
         return $this;
     }
 
@@ -82,6 +82,7 @@ class PDF
             'height' => $height,
             'deviceScaleFactor' => $deviceScaleFactor,
         ];
+
         return $this;
     }
 
@@ -91,6 +92,7 @@ class PDF
     public function tagged(bool $tagged = true): self
     {
         $this->options['options']['tagged'] = $tagged;
+
         return $this;
     }
 
@@ -106,6 +108,7 @@ class PDF
                 'permissions' => $permissions,
             ]);
         }
+
         return $this;
     }
 
@@ -117,6 +120,7 @@ class PDF
     public function format(string $format): self
     {
         $this->options['options']['format'] = $format;
+
         return $this;
     }
 
@@ -126,6 +130,7 @@ class PDF
     public function width(string $width): self
     {
         $this->options['options']['width'] = $width;
+
         return $this;
     }
 
@@ -135,6 +140,7 @@ class PDF
     public function height(string $height): self
     {
         $this->options['options']['height'] = $height;
+
         return $this;
     }
 
@@ -149,6 +155,7 @@ class PDF
             'bottom' => $bottom,
             'left' => $left,
         ];
+
         return $this;
     }
 
@@ -158,6 +165,7 @@ class PDF
     public function landscape(bool $landscape = true): self
     {
         $this->options['options']['landscape'] = $landscape;
+
         return $this;
     }
 
@@ -169,6 +177,7 @@ class PDF
     public function printBackground(bool $printBackground = true): self
     {
         $this->options['options']['printBackground'] = $printBackground;
+
         return $this;
     }
 
@@ -178,6 +187,7 @@ class PDF
     public function displayHeaderFooter(bool $display = true): self
     {
         $this->options['options']['displayHeaderFooter'] = $display;
+
         return $this;
     }
 
@@ -187,6 +197,7 @@ class PDF
     public function headerTemplate(string $html): self
     {
         $this->options['options']['headerTemplate'] = $html;
+
         return $this;
     }
 
@@ -196,6 +207,7 @@ class PDF
     public function footerTemplate(string $html): self
     {
         $this->options['options']['footerTemplate'] = $html;
+
         return $this;
     }
 
@@ -205,6 +217,7 @@ class PDF
     public function preferCSSPageSize(bool $prefer = true): self
     {
         $this->options['options']['preferCSSPageSize'] = $prefer;
+
         return $this;
     }
 
@@ -216,6 +229,7 @@ class PDF
     public function pageRanges(string $ranges): self
     {
         $this->options['options']['pageRanges'] = $ranges;
+
         return $this;
     }
 
@@ -230,6 +244,7 @@ class PDF
             throw new \InvalidArgumentException('Scale must be between 0.1 and 2');
         }
         $this->options['options']['scale'] = $scale;
+
         return $this;
     }
 
@@ -244,6 +259,7 @@ class PDF
             'username' => $username,
             'password' => $password,
         ];
+
         return $this;
     }
 
@@ -255,6 +271,7 @@ class PDF
     public function emulateMedia(bool $emulate = true): self
     {
         $this->options['options']['emulateMedia'] = $emulate;
+
         return $this;
     }
 
@@ -264,6 +281,7 @@ class PDF
     public function printMediaType(bool $print = true): self
     {
         $this->options['options']['printMediaType'] = $print;
+
         return $this;
     }
 
@@ -273,12 +291,13 @@ class PDF
     public function marginUnits(string $units): self
     {
         $this->options['options']['marginUnits'] = $units;
+
         return $this;
     }
 
     /**
      * Set PDF metadata.
-     * 
+     *
      * @param array{
      *   title?: string,
      *   author?: string,
@@ -291,6 +310,7 @@ class PDF
     public function metadata(array $metadata): self
     {
         $this->options['options']['metadata'] = $metadata;
+
         return $this;
     }
 
@@ -303,6 +323,7 @@ class PDF
             throw PDFGenerationException::invalidOptions('Compression level must be between 0 and 9');
         }
         $this->options['options']['compressionLevel'] = $level;
+
         return $this;
     }
 
@@ -312,12 +333,13 @@ class PDF
     public function pdfA(bool $enabled = true): self
     {
         $this->options['options']['pdfA'] = $enabled;
+
         return $this;
     }
 
     /**
      * Set advanced page range options.
-     * 
+     *
      * @param array{
      *   ranges: string[],
      *   separator?: string,
@@ -328,12 +350,13 @@ class PDF
     public function setPageRanges(array $options): self
     {
         $this->options['options']['pageRanges'] = $options;
+
         return $this;
     }
 
     /**
      * Set advanced header template options.
-     * 
+     *
      * @param array{
      *   html: string,
      *   height?: string,
@@ -345,12 +368,13 @@ class PDF
     public function setHeaderTemplate(array $options): self
     {
         $this->options['options']['headerTemplate'] = $options;
+
         return $this;
     }
 
     /**
      * Set advanced footer template options.
-     * 
+     *
      * @param array{
      *   html: string,
      *   height?: string,
@@ -362,12 +386,13 @@ class PDF
     public function setFooterTemplate(array $options): self
     {
         $this->options['options']['footerTemplate'] = $options;
+
         return $this;
     }
 
     /**
      * Add watermark to PDF.
-     * 
+     *
      * @param array{
      *   text: string,
      *   font?: string,
@@ -382,12 +407,13 @@ class PDF
     public function setWatermark(array $options): self
     {
         $this->options['options']['watermark'] = $options;
+
         return $this;
     }
 
     /**
      * Set PDF outline/bookmarks options.
-     * 
+     *
      * @param array{
      *   enabled?: bool,
      *   depth?: int,
@@ -398,12 +424,13 @@ class PDF
     public function setOutlineOptions(array $options): self
     {
         $this->options['options']['outline'] = $options;
+
         return $this;
     }
 
     /**
      * Set PDF accessibility options.
-     * 
+     *
      * @param array{
      *   tagged?: bool,
      *   structureOnly?: bool,
@@ -418,12 +445,13 @@ class PDF
     public function setAccessibilityOptions(array $options): self
     {
         $this->options['options']['accessibility'] = $options;
+
         return $this;
     }
 
     /**
      * Configure digital signature options.
-     * 
+     *
      * @param array{
      *   certificate: string,
      *   privateKey: string,
@@ -442,12 +470,13 @@ class PDF
     public function setSignature(array $options): self
     {
         $this->options['options']['signature'] = $options;
+
         return $this;
     }
 
     /**
      * Add file attachments to PDF.
-     * 
+     *
      * @param array{
      *   path: string,
      *   name?: string,
@@ -461,12 +490,13 @@ class PDF
     public function setAttachments(array $attachments): self
     {
         $this->options['options']['attachments'] = $attachments;
+
         return $this;
     }
 
     /**
      * Set custom page labels.
-     * 
+     *
      * @param array{
      *   startPage: int,
      *   style?: 'decimal'|'roman'|'letters'|'none',
@@ -477,12 +507,13 @@ class PDF
     public function setPageLabels(array $labels): self
     {
         $this->options['options']['pageLabels'] = $labels;
+
         return $this;
     }
 
     /**
      * Configure PDF/X compliance.
-     * 
+     *
      * @param array{
      *   version: 'PDF/X-1a'|'PDF/X-3'|'PDF/X-4',
      *   outputIntent?: array{
@@ -500,12 +531,13 @@ class PDF
     public function setPdfX(array $options): self
     {
         $this->options['options']['pdfX'] = $options;
+
         return $this;
     }
 
     /**
      * Set advanced font options.
-     * 
+     *
      * @param array{
      *   embedding?: array{
      *     subset?: bool,
@@ -523,6 +555,7 @@ class PDF
     public function setFontOptions(array $options): self
     {
         $this->options['options']['fontOptions'] = $options;
+
         return $this;
     }
 
@@ -538,7 +571,7 @@ class PDF
         try {
             $request = new Request(
                 'POST',
-                $this->buildQueryString($this->client->url() . '/pdf?token=' . $this->client->token()),
+                $this->buildQueryString($this->client->url().'/pdf?token='.$this->client->token()),
                 [
                     'Content-Type' => 'application/json',
                 ],
@@ -560,7 +593,7 @@ class PDF
      */
     protected function validateOptions(): void
     {
-        if (!isset($this->options['url']) && !isset($this->options['html'])) {
+        if (! isset($this->options['url']) && ! isset($this->options['html'])) {
             throw PDFGenerationException::invalidOptions('Either URL or HTML content must be provided');
         }
 
@@ -573,4 +606,4 @@ class PDF
 
         // Add any other validation rules here
     }
-} 
+}

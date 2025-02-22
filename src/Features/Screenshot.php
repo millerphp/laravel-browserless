@@ -4,21 +4,21 @@ declare(strict_types=1);
 
 namespace MillerPHP\LaravelBrowserless\Features;
 
-use MillerPHP\LaravelBrowserless\Contracts\ClientContract;
-use MillerPHP\LaravelBrowserless\Responses\ScreenshotResponse;
-use MillerPHP\LaravelBrowserless\Exceptions\ScreenshotException;
 use GuzzleHttp\Psr7\Request;
-use MillerPHP\LaravelBrowserless\Features\Concerns\HasQueryParameters;
-use MillerPHP\LaravelBrowserless\Features\Concerns\HasOptions;
-use MillerPHP\LaravelBrowserless\Features\Concerns\HasNavigationOptions;
+use MillerPHP\LaravelBrowserless\Contracts\ClientContract;
+use MillerPHP\LaravelBrowserless\Exceptions\ScreenshotException;
 use MillerPHP\LaravelBrowserless\Features\Concerns\HasCookieManagement;
+use MillerPHP\LaravelBrowserless\Features\Concerns\HasNavigationOptions;
+use MillerPHP\LaravelBrowserless\Features\Concerns\HasOptions;
+use MillerPHP\LaravelBrowserless\Features\Concerns\HasQueryParameters;
+use MillerPHP\LaravelBrowserless\Responses\ScreenshotResponse;
 
 class Screenshot
 {
-    use HasQueryParameters;
-    use HasOptions;
-    use HasNavigationOptions;
     use HasCookieManagement;
+    use HasNavigationOptions;
+    use HasOptions;
+    use HasQueryParameters;
 
     /**
      * The options for the screenshot generation.
@@ -44,6 +44,7 @@ class Screenshot
     public function html(string $html): self
     {
         $this->options['html'] = $html;
+
         return $this;
     }
 
@@ -53,6 +54,7 @@ class Screenshot
     public function url(string $url): self
     {
         $this->options['url'] = $url;
+
         return $this;
     }
 
@@ -62,6 +64,7 @@ class Screenshot
     public function fullPage(bool $fullPage = true): self
     {
         $this->options['options']['fullPage'] = $fullPage;
+
         return $this;
     }
 
@@ -70,10 +73,11 @@ class Screenshot
      */
     public function type(string $type): self
     {
-        if (!in_array($type, ['jpeg', 'png', 'webp'])) {
+        if (! in_array($type, ['jpeg', 'png', 'webp'])) {
             throw ScreenshotException::invalidOptions('Type must be jpeg, png, or webp');
         }
         $this->options['options']['type'] = $type;
+
         return $this;
     }
 
@@ -86,6 +90,7 @@ class Screenshot
             throw ScreenshotException::invalidOptions('Quality must be between 0 and 100');
         }
         $this->options['options']['quality'] = $quality;
+
         return $this;
     }
 
@@ -95,45 +100,49 @@ class Screenshot
     public function omitBackground(bool $omit = true): self
     {
         $this->options['options']['omitBackground'] = $omit;
+
         return $this;
     }
 
     /**
      * Set the clip area of the page.
      *
-     * @param array{x: float, y: float, width: float, height: float} $clip
+     * @param  array{x: float, y: float, width: float, height: float}  $clip
      */
     public function clip(array $clip): self
     {
         $this->options['options']['clip'] = $clip;
+
         return $this;
     }
 
     /**
      * Add a script tag to the page.
-     * 
-     * @param array{url?: string, content?: string} $script
+     *
+     * @param  array{url?: string, content?: string}  $script
      */
     public function addScript(array $script): self
     {
-        if (!isset($this->options['addScriptTag'])) {
+        if (! isset($this->options['addScriptTag'])) {
             $this->options['addScriptTag'] = [];
         }
         $this->options['addScriptTag'][] = $script;
+
         return $this;
     }
 
     /**
      * Add a style tag to the page.
-     * 
-     * @param array{url?: string, content?: string} $style
+     *
+     * @param  array{url?: string, content?: string}  $style
      */
     public function addStyle(array $style): self
     {
-        if (!isset($this->options['addStyleTag'])) {
+        if (! isset($this->options['addStyleTag'])) {
             $this->options['addStyleTag'] = [];
         }
         $this->options['addStyleTag'][] = $style;
+
         return $this;
     }
 
@@ -155,6 +164,7 @@ class Screenshot
             'height' => $height,
             'deviceScaleFactor' => $deviceScaleFactor,
         ];
+
         return $this;
     }
 
@@ -164,6 +174,7 @@ class Screenshot
     public function device(string $name): self
     {
         $this->options['options']['deviceName'] = $name;
+
         return $this;
     }
 
@@ -176,6 +187,7 @@ class Screenshot
             'username' => $username,
             'password' => $password,
         ];
+
         return $this;
     }
 
@@ -184,16 +196,17 @@ class Screenshot
      */
     public function encoding(string $encoding): self
     {
-        if (!in_array($encoding, ['binary', 'base64'])) {
+        if (! in_array($encoding, ['binary', 'base64'])) {
             throw ScreenshotException::invalidOptions('Encoding must be binary or base64');
         }
         $this->options['encoding'] = $encoding;
+
         return $this;
     }
 
     /**
      * Set JPEG optimization options.
-     * 
+     *
      * @param array{
      *   progressive?: bool,
      *   optimizeScans?: bool,
@@ -203,12 +216,13 @@ class Screenshot
     public function jpegOptimization(array $options): self
     {
         $this->options['jpegOptimization'] = $options;
+
         return $this;
     }
 
     /**
      * Set PNG optimization options.
-     * 
+     *
      * @param array{
      *   compressionLevel?: int,
      *   palette?: bool,
@@ -218,6 +232,7 @@ class Screenshot
     public function pngOptimization(array $options): self
     {
         $this->options['pngOptimization'] = $options;
+
         return $this;
     }
 
@@ -227,12 +242,13 @@ class Screenshot
     public function frameSelector(string $selector): self
     {
         $this->options['frameSelector'] = $selector;
+
         return $this;
     }
 
     /**
      * Set advanced capture options.
-     * 
+     *
      * @param array{
      *   optimizationLevel?: int,
      *   captureBeyondViewport?: bool,
@@ -243,12 +259,13 @@ class Screenshot
     public function captureOptions(array $options): self
     {
         $this->options['captureOptions'] = $options;
+
         return $this;
     }
 
     /**
      * Capture specific element.
-     * 
+     *
      * @param array{
      *   selector: string,
      *   padding?: int,
@@ -258,12 +275,13 @@ class Screenshot
     public function elementScreenshot(array $options): self
     {
         $this->options['elementScreenshot'] = $options;
+
         return $this;
     }
 
     /**
      * Mask sensitive elements.
-     * 
+     *
      * @param array{
      *   selector: string,
      *   color?: string,
@@ -273,12 +291,13 @@ class Screenshot
     public function maskSelectors(array $selectors): self
     {
         $this->options['maskSelectors'] = $selectors;
+
         return $this;
     }
 
     /**
      * Set WebP specific options.
-     * 
+     *
      * @param array{
      *   lossless?: bool,
      *   nearLossless?: bool,
@@ -289,12 +308,13 @@ class Screenshot
     public function webpOptions(array $options): self
     {
         $this->options['webpOptions'] = $options;
+
         return $this;
     }
 
     /**
      * Capture performance timeline.
-     * 
+     *
      * @param array{
      *   screenshots?: bool,
      *   trace?: bool,
@@ -305,12 +325,13 @@ class Screenshot
     public function captureTimeline(array $options): self
     {
         $this->options['captureTimeline'] = $options;
+
         return $this;
     }
 
     /**
      * Configure page scrolling before capture.
-     * 
+     *
      * @param array{
      *   direction?: 'vertical'|'horizontal',
      *   distance?: int,
@@ -321,6 +342,7 @@ class Screenshot
     public function scrollPage(array $options): self
     {
         $this->options['scrollPage'] = $options;
+
         return $this;
     }
 
@@ -333,23 +355,25 @@ class Screenshot
             'expression' => $expression,
             'timeout' => $timeout,
         ];
+
         return $this;
     }
 
     /**
      * Emulate vision deficiencies.
-     * 
-     * @param 'achromatopsia'|'deuteranopia'|'protanopia'|'tritanopia'|'blurredVision'|null $type
+     *
+     * @param  'achromatopsia'|'deuteranopia'|'protanopia'|'tritanopia'|'blurredVision'|null  $type
      */
     public function emulateVisionDeficiency(?string $type): self
     {
         $this->options['emulateVisionDeficiency'] = $type;
+
         return $this;
     }
 
     /**
      * Configure clip overflow behavior.
-     * 
+     *
      * @param array{
      *   strategy: 'crop'|'expand'|'scroll',
      *   padding?: int,
@@ -359,23 +383,25 @@ class Screenshot
     public function setClipOverflow(array $options): self
     {
         $this->options['clipOverflow'] = $options;
+
         return $this;
     }
 
     /**
      * Set optimization preset.
-     * 
-     * @param 'balanced'|'performance'|'quality'|'size' $preset
+     *
+     * @param  'balanced'|'performance'|'quality'|'size'  $preset
      */
     public function setOptimizationPreset(string $preset): self
     {
         $this->options['optimizationPreset'] = $preset;
+
         return $this;
     }
 
     /**
      * Set custom background color.
-     * 
+     *
      * @param array{
      *   r: int,
      *   g: int,
@@ -386,12 +412,13 @@ class Screenshot
     public function setBackgroundColor(array $color): self
     {
         $this->options['backgroundColor'] = $color;
+
         return $this;
     }
 
     /**
      * Set quality vs size priority.
-     * 
+     *
      * @param array{
      *   mode: 'quality'|'size'|'balanced',
      *   threshold?: float,
@@ -401,12 +428,13 @@ class Screenshot
     public function setQualityPriority(array $options): self
     {
         $this->options['qualityPriority'] = $options;
+
         return $this;
     }
 
     /**
      * Set screenshot animation options.
-     * 
+     *
      * @param array{
      *   duration?: int,
      *   fps?: int,
@@ -419,12 +447,13 @@ class Screenshot
     public function setAnimationOptions(array $options): self
     {
         $this->options['animationOptions'] = $options;
+
         return $this;
     }
 
     /**
      * Set screenshot composition options.
-     * 
+     *
      * @param array{
      *   layers?: array{selector: string, index: int}[],
      *   blendMode?: string,
@@ -435,12 +464,13 @@ class Screenshot
     public function setCompositionOptions(array $options): self
     {
         $this->options['compositionOptions'] = $options;
+
         return $this;
     }
 
     /**
      * Configure screenshot retries.
-     * 
+     *
      * @param array{
      *   attempts?: int,
      *   delay?: int,
@@ -451,12 +481,13 @@ class Screenshot
     public function setRetryOptions(array $options): self
     {
         $this->options['retryOptions'] = $options;
+
         return $this;
     }
 
     /**
      * Set advanced image processing options.
-     * 
+     *
      * @param array{
      *   sharpen?: array{amount: float, radius: float, threshold: float},
      *   blur?: array{sigma: float, radius: float},
@@ -470,12 +501,13 @@ class Screenshot
     public function setImageProcessing(array $options): self
     {
         $this->options['imageProcessing'] = $options;
+
         return $this;
     }
 
     /**
      * Configure OCR settings.
-     * 
+     *
      * @param array{
      *   enabled: bool,
      *   language?: string,
@@ -490,12 +522,13 @@ class Screenshot
     public function setOpticalCharacterRecognition(array $options): self
     {
         $this->options['ocr'] = $options;
+
         return $this;
     }
 
     /**
      * Set visual diff comparison options.
-     * 
+     *
      * @param array{
      *   baseImage: string,
      *   threshold?: float,
@@ -507,12 +540,13 @@ class Screenshot
     public function setDiffOptions(array $options): self
     {
         $this->options['diffOptions'] = $options;
+
         return $this;
     }
 
     /**
      * Set granular image optimization settings.
-     * 
+     *
      * @param array{
      *   colorQuantization?: array{
      *     enabled: bool,
@@ -532,12 +566,13 @@ class Screenshot
     public function setImageOptimization(array $options): self
     {
         $this->options['imageOptimization'] = $options;
+
         return $this;
     }
 
     /**
      * Configure advanced viewport emulation.
-     * 
+     *
      * @param array{
      *   orientation?: array{
      *     angle: int,
@@ -553,12 +588,13 @@ class Screenshot
     public function setViewportEmulation(array $options): self
     {
         $this->options['viewportEmulation'] = $options;
+
         return $this;
     }
 
     /**
      * Set advanced image filtering options.
-     * 
+     *
      * @param array{
      *   filters?: array{
      *     name: string,
@@ -579,12 +615,13 @@ class Screenshot
     public function setImageFilters(array $options): self
     {
         $this->options['imageFilters'] = $options;
+
         return $this;
     }
 
     /**
      * Configure color management.
-     * 
+     *
      * @param array{
      *   profile?: string,
      *   intent?: 'perceptual'|'saturation'|'relative'|'absolute',
@@ -600,12 +637,13 @@ class Screenshot
     public function setColorManagement(array $options): self
     {
         $this->options['colorManagement'] = $options;
+
         return $this;
     }
 
     /**
      * Set advanced output configuration.
-     * 
+     *
      * @param array{
      *   format?: array{
      *     progressive?: bool,
@@ -629,6 +667,7 @@ class Screenshot
     public function setOutputOptions(array $options): self
     {
         $this->options['outputOptions'] = $options;
+
         return $this;
     }
 
@@ -638,6 +677,7 @@ class Screenshot
     public function overlay(string $html): self
     {
         $this->options['overlay'] = $html;
+
         return $this;
     }
 
@@ -653,7 +693,7 @@ class Screenshot
         try {
             $request = new Request(
                 'POST',
-                $this->buildQueryString($this->client->url() . '/screenshot?token=' . $this->client->token()),
+                $this->buildQueryString($this->client->url().'/screenshot?token='.$this->client->token()),
                 [
                     'Content-Type' => 'application/json',
                 ],
@@ -675,7 +715,7 @@ class Screenshot
      */
     protected function validateOptions(): void
     {
-        if (!isset($this->options['url']) && !isset($this->options['html'])) {
+        if (! isset($this->options['url']) && ! isset($this->options['html'])) {
             throw ScreenshotException::invalidOptions('Either URL or HTML content must be provided');
         }
 
@@ -686,4 +726,4 @@ class Screenshot
             }
         }
     }
-} 
+}

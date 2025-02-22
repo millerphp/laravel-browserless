@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace MillerPHP\LaravelBrowserless\Responses;
 
-use Psr\Http\Message\ResponseInterface;
 use MillerPHP\LaravelBrowserless\Exceptions\UnblockException;
+use Psr\Http\Message\ResponseInterface;
 
 class UnblockResponse
 {
@@ -70,6 +70,7 @@ class UnblockResponse
      * Get the response data as an array.
      *
      * @return array<string,mixed>
+     *
      * @throws UnblockException
      */
     protected function data(): array
@@ -77,7 +78,7 @@ class UnblockResponse
         try {
             return json_decode($this->raw(), true, 512, JSON_THROW_ON_ERROR);
         } catch (\JsonException $e) {
-            throw UnblockException::invalidResponse('Response is not valid JSON: ' . $e->getMessage());
+            throw UnblockException::invalidResponse('Response is not valid JSON: '.$e->getMessage());
         }
     }
 
@@ -104,4 +105,4 @@ class UnblockResponse
     {
         return $this->response;
     }
-} 
+}

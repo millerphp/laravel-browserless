@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace MillerPHP\LaravelBrowserless\Features;
 
-use MillerPHP\LaravelBrowserless\Contracts\ClientContract;
-use MillerPHP\LaravelBrowserless\Responses\UnblockResponse;
-use MillerPHP\LaravelBrowserless\Exceptions\UnblockException;
 use GuzzleHttp\Psr7\Request;
+use MillerPHP\LaravelBrowserless\Contracts\ClientContract;
+use MillerPHP\LaravelBrowserless\Exceptions\UnblockException;
+use MillerPHP\LaravelBrowserless\Responses\UnblockResponse;
 
 class Unblock
 {
@@ -37,6 +37,7 @@ class Unblock
     public function url(string $url): self
     {
         $this->options['url'] = $url;
+
         return $this;
     }
 
@@ -46,6 +47,7 @@ class Unblock
     public function browserWSEndpoint(bool $enabled = true): self
     {
         $this->options['browserWSEndpoint'] = $enabled;
+
         return $this;
     }
 
@@ -55,6 +57,7 @@ class Unblock
     public function cookies(bool $enabled = true): self
     {
         $this->options['cookies'] = $enabled;
+
         return $this;
     }
 
@@ -64,6 +67,7 @@ class Unblock
     public function content(bool $enabled = true): self
     {
         $this->options['content'] = $enabled;
+
         return $this;
     }
 
@@ -73,6 +77,7 @@ class Unblock
     public function screenshot(bool $enabled = true): self
     {
         $this->options['screenshot'] = $enabled;
+
         return $this;
     }
 
@@ -82,6 +87,7 @@ class Unblock
     public function ttl(int $milliseconds): self
     {
         $this->options['ttl'] = $milliseconds;
+
         return $this;
     }
 
@@ -94,6 +100,7 @@ class Unblock
             'event' => $event,
             'timeout' => $timeout,
         ];
+
         return $this;
     }
 
@@ -106,13 +113,14 @@ class Unblock
             'fn' => $function,
             'timeout' => $timeout,
         ];
+
         return $this;
     }
 
     /**
      * Wait for a selector to appear before continuing.
      *
-     * @param array{hidden?: bool, timeout?: int, visible?: bool} $options
+     * @param  array{hidden?: bool, timeout?: int, visible?: bool}  $options
      */
     public function waitForSelector(string $selector, array $options = []): self
     {
@@ -120,6 +128,7 @@ class Unblock
             ['selector' => $selector],
             $options
         );
+
         return $this;
     }
 
@@ -132,6 +141,7 @@ class Unblock
             'username' => $username,
             'password' => $password,
         ];
+
         return $this;
     }
 
@@ -141,17 +151,19 @@ class Unblock
     public function ignoreHTTPSErrors(bool $ignore = true): self
     {
         $this->options['ignoreHTTPSErrors'] = $ignore;
+
         return $this;
     }
 
     /**
      * Set multiple options at once.
      *
-     * @param array<string,mixed> $options
+     * @param  array<string,mixed>  $options
      */
     public function withOptions(array $options): self
     {
         $this->options = array_merge_recursive($this->options, $options);
+
         return $this;
     }
 
@@ -167,7 +179,7 @@ class Unblock
         try {
             $request = new Request(
                 'POST',
-                $this->client->url() . '/unblock?token=' . $this->client->token(),
+                $this->client->url().'/unblock?token='.$this->client->token(),
                 [
                     'Content-Type' => 'application/json',
                 ],
@@ -189,8 +201,8 @@ class Unblock
      */
     protected function validateOptions(): void
     {
-        if (!isset($this->options['url'])) {
+        if (! isset($this->options['url'])) {
             throw UnblockException::invalidOptions('URL must be provided');
         }
     }
-} 
+}

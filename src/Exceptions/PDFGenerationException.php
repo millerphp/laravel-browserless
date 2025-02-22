@@ -19,4 +19,4 @@ class PDFGenerationException extends BrowserlessException
     {
         return new self("Invalid PDF options: {$message}");
     }
-} 
+}

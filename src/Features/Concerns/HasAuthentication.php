@@ -9,15 +9,16 @@ trait HasAuthentication
     /**
      * Set HTTP authentication credentials.
      *
-     * @param array{username: string, password: string} $credentials
+     * @param  array{username: string, password: string}  $credentials
      */
     public function authenticate(array $credentials): self
     {
-        if (!isset($credentials['username']) || !isset($credentials['password'])) {
+        if (! isset($credentials['username']) || ! isset($credentials['password'])) {
             throw new \InvalidArgumentException('Credentials must have username and password');
         }
 
         $this->options['authenticate'] = $credentials;
+
         return $this;
     }
 
@@ -31,4 +32,4 @@ trait HasAuthentication
             'password' => $password,
         ]);
     }
-} 
+}

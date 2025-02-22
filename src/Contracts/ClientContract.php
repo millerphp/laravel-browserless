@@ -21,6 +21,7 @@ interface ClientContract
      * @param  array<int,Plugin>  $plugins
      */
     public function setup(array $plugins = []): ClientContract;
+
     /**
      * Return the URL for the API.
      */

@@ -24,4 +24,4 @@ class ScrapeException extends BrowserlessException
     {
         return new self("Invalid scrape response: {$message}");
     }
-} 
+}

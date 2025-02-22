@@ -20,4 +20,4 @@ class WebSocketException extends BrowserlessException
     {
         return new self("Failed to send WebSocket message: {$message}");
     }
-} 
+}

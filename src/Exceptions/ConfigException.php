@@ -19,4 +19,4 @@ class ConfigException extends BrowserlessException
     {
         return new self("Invalid configuration response: {$message}");
     }
-} 
+}

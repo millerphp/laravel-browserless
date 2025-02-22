@@ -45,8 +45,8 @@ class BQLResponse
     /**
      * Get a specific value from the response data.
      *
-     * @param string $key The key to get from the response data
-     * @param mixed $default The default value if the key doesn't exist
+     * @param  string  $key  The key to get from the response data
+     * @param  mixed  $default  The default value if the key doesn't exist
      * @return mixed The value from the response data or the default value
      */
     public function get(string $key, mixed $default = null): mixed
@@ -59,7 +59,7 @@ class BQLResponse
      */
     public function hasErrors(): bool
     {
-        return isset($this->data['errors']) && !empty($this->data['errors']);
+        return isset($this->data['errors']) && ! empty($this->data['errors']);
     }
 
     /**
@@ -71,4 +71,4 @@ class BQLResponse
     {
         return $this->data['errors'] ?? [];
     }
-} 
+}

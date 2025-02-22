@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace MillerPHP\LaravelBrowserless\Responses;
 
-use Psr\Http\Message\ResponseInterface;
 use MillerPHP\LaravelBrowserless\Exceptions\PDFGenerationException;
+use Psr\Http\Message\ResponseInterface;
 
 class PDFResponse
 {
@@ -33,7 +33,7 @@ class PDFResponse
     {
         try {
             $result = file_put_contents($path, $this->content());
-            
+
             if ($result === false) {
                 throw new \RuntimeException("Failed to save PDF to {$path}");
             }
@@ -52,6 +52,7 @@ class PDFResponse
     public function saveAs(string $path): string
     {
         $this->save($path);
+
         return $path;
     }
 
@@ -90,7 +91,7 @@ class PDFResponse
     /**
      * Stream the PDF to the browser for download.
      *
-     * @param string|null $filename The filename to suggest in the download
+     * @param  string|null  $filename  The filename to suggest in the download
      */
     public function download(?string $filename = null): never
     {
@@ -98,11 +99,11 @@ class PDFResponse
             throw new \RuntimeException('Headers have already been sent');
         }
 
-        $filename = $filename ?? 'document-' . date('Y-m-d-His') . '.pdf';
+        $filename = $filename ?? 'document-'.date('Y-m-d-His').'.pdf';
 
         header('Content-Type: application/pdf');
-        header('Content-Disposition: attachment; filename="' . $filename . '"');
-        header('Content-Length: ' . $this->size());
+        header('Content-Disposition: attachment; filename="'.$filename.'"');
+        header('Content-Length: '.$this->size());
         header('Cache-Control: no-cache, no-store, must-revalidate');
         header('Pragma: no-cache');
         header('Expires: 0');
@@ -114,7 +115,7 @@ class PDFResponse
     /**
      * Stream the PDF to the browser for inline display.
      *
-     * @param string|null $filename The filename to suggest if the user chooses to download
+     * @param  string|null  $filename  The filename to suggest if the user chooses to download
      */
     public function display(?string $filename = null): never
     {
@@ -122,11 +123,11 @@ class PDFResponse
             throw new \RuntimeException('Headers have already been sent');
         }
 
-        $filename = $filename ?? 'document-' . date('Y-m-d-His') . '.pdf';
+        $filename = $filename ?? 'document-'.date('Y-m-d-His').'.pdf';
 
         header('Content-Type: application/pdf');
-        header('Content-Disposition: inline; filename="' . $filename . '"');
-        header('Content-Length: ' . $this->size());
+        header('Content-Disposition: inline; filename="'.$filename.'"');
+        header('Content-Length: '.$this->size());
         header('Cache-Control: no-cache, no-store, must-revalidate');
         header('Pragma: no-cache');
         header('Expires: 0');
@@ -134,4 +135,4 @@ class PDFResponse
         echo $this->content();
         exit;
     }
-} 
+}

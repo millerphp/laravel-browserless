@@ -20,7 +20,7 @@ trait HasViewport
      */
     public function viewport(array $options): self
     {
-        if (!isset($options['width']) || !isset($options['height'])) {
+        if (! isset($options['width']) || ! isset($options['height'])) {
             throw new \InvalidArgumentException('Viewport must have width and height');
         }
 
@@ -50,11 +50,12 @@ trait HasViewport
      */
     public function setDeviceScaleFactor(float $factor): self
     {
-        if (!isset($this->options['viewport'])) {
+        if (! isset($this->options['viewport'])) {
             throw new \RuntimeException('Viewport must be set before setting device scale factor');
         }
 
         $this->options['viewport']['deviceScaleFactor'] = $factor;
+
         return $this;
     }
 
@@ -63,11 +64,12 @@ trait HasViewport
      */
     public function setHasTouch(bool $hasTouch): self
     {
-        if (!isset($this->options['viewport'])) {
+        if (! isset($this->options['viewport'])) {
             throw new \RuntimeException('Viewport must be set before setting touch events');
         }
 
         $this->options['viewport']['hasTouch'] = $hasTouch;
+
         return $this;
     }
 
@@ -76,11 +78,12 @@ trait HasViewport
      */
     public function setIsLandscape(bool $isLandscape): self
     {
-        if (!isset($this->options['viewport'])) {
+        if (! isset($this->options['viewport'])) {
             throw new \RuntimeException('Viewport must be set before setting orientation');
         }
 
         $this->options['viewport']['isLandscape'] = $isLandscape;
+
         return $this;
     }
 
@@ -89,11 +92,12 @@ trait HasViewport
      */
     public function setIsMobile(bool $isMobile): self
     {
-        if (!isset($this->options['viewport'])) {
+        if (! isset($this->options['viewport'])) {
             throw new \RuntimeException('Viewport must be set before setting mobile emulation');
         }
 
         $this->options['viewport']['isMobile'] = $isMobile;
+
         return $this;
     }
-} 
+}

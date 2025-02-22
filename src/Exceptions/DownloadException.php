@@ -19,4 +19,4 @@ class DownloadException extends BrowserlessException
     {
         return new self("Invalid download options: {$message}");
     }
-} 
+}

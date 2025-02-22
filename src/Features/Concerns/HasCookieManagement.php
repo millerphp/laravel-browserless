@@ -33,24 +33,25 @@ trait HasCookieManagement
     public function cookies(array $cookies): self
     {
         foreach ($cookies as $cookie) {
-            if (!isset($cookie['name']) || !isset($cookie['value'])) {
+            if (! isset($cookie['name']) || ! isset($cookie['value'])) {
                 throw new \InvalidArgumentException('Cookie must have name and value');
             }
 
-            if (isset($cookie['sameSite']) && !in_array($cookie['sameSite'], ['Lax', 'None', 'Strict'])) {
+            if (isset($cookie['sameSite']) && ! in_array($cookie['sameSite'], ['Lax', 'None', 'Strict'])) {
                 throw new \InvalidArgumentException('Invalid sameSite value');
             }
 
-            if (isset($cookie['priority']) && !in_array($cookie['priority'], ['Low', 'Medium', 'High'])) {
+            if (isset($cookie['priority']) && ! in_array($cookie['priority'], ['Low', 'Medium', 'High'])) {
                 throw new \InvalidArgumentException('Invalid priority value');
             }
 
-            if (isset($cookie['sourceScheme']) && !in_array($cookie['sourceScheme'], ['Unset', 'Secure', 'NonSecure'])) {
+            if (isset($cookie['sourceScheme']) && ! in_array($cookie['sourceScheme'], ['Unset', 'Secure', 'NonSecure'])) {
                 throw new \InvalidArgumentException('Invalid sourceScheme value');
             }
         }
 
         $this->options['cookies'] = $cookies;
+
         return $this;
     }
 
@@ -80,27 +81,28 @@ trait HasCookieManagement
      */
     public function addCookie(array $cookie): self
     {
-        if (!isset($this->options['cookies'])) {
+        if (! isset($this->options['cookies'])) {
             $this->options['cookies'] = [];
         }
 
-        if (!isset($cookie['name']) || !isset($cookie['value'])) {
+        if (! isset($cookie['name']) || ! isset($cookie['value'])) {
             throw new \InvalidArgumentException('Cookie must have name and value');
         }
 
-        if (isset($cookie['sameSite']) && !in_array($cookie['sameSite'], ['Lax', 'None', 'Strict'])) {
+        if (isset($cookie['sameSite']) && ! in_array($cookie['sameSite'], ['Lax', 'None', 'Strict'])) {
             throw new \InvalidArgumentException('Invalid sameSite value');
         }
 
-        if (isset($cookie['priority']) && !in_array($cookie['priority'], ['Low', 'Medium', 'High'])) {
+        if (isset($cookie['priority']) && ! in_array($cookie['priority'], ['Low', 'Medium', 'High'])) {
             throw new \InvalidArgumentException('Invalid priority value');
         }
 
-        if (isset($cookie['sourceScheme']) && !in_array($cookie['sourceScheme'], ['Unset', 'Secure', 'NonSecure'])) {
+        if (isset($cookie['sourceScheme']) && ! in_array($cookie['sourceScheme'], ['Unset', 'Secure', 'NonSecure'])) {
             throw new \InvalidArgumentException('Invalid sourceScheme value');
         }
 
         $this->options['cookies'][] = $cookie;
+
         return $this;
     }
-} 
+}

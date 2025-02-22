@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace MillerPHP\LaravelBrowserless\Features;
 
-use MillerPHP\LaravelBrowserless\Contracts\ClientContract;
-use MillerPHP\LaravelBrowserless\Responses\ScrapeResponse;
-use MillerPHP\LaravelBrowserless\Exceptions\ScrapeException;
 use GuzzleHttp\Psr7\Request;
+use MillerPHP\LaravelBrowserless\Contracts\ClientContract;
+use MillerPHP\LaravelBrowserless\Exceptions\ScrapeException;
+use MillerPHP\LaravelBrowserless\Responses\ScrapeResponse;
 
 class Scrape
 {
@@ -34,6 +34,7 @@ class Scrape
     public function url(string $url): self
     {
         $this->options['url'] = $url;
+
         return $this;
     }
 
@@ -46,13 +47,14 @@ class Scrape
             throw ScrapeException::invalidOptions('Cannot set both URL and HTML content');
         }
         $this->options['html'] = $html;
+
         return $this;
     }
 
     /**
      * Add an element to scrape.
      *
-     * @param array<string,mixed> $options
+     * @param  array<string,mixed>  $options
      */
     public function element(string $selector, array $options = []): self
     {
@@ -60,6 +62,7 @@ class Scrape
             ['selector' => $selector],
             $options
         );
+
         return $this;
     }
 
@@ -69,13 +72,14 @@ class Scrape
     public function waitForTimeout(int $milliseconds): self
     {
         $this->options['waitForTimeout'] = $milliseconds;
+
         return $this;
     }
 
     /**
      * Wait for a selector to appear before scraping.
      *
-     * @param array{hidden?: bool, timeout?: int, visible?: bool} $options
+     * @param  array{hidden?: bool, timeout?: int, visible?: bool}  $options
      */
     public function waitForSelector(string $selector, array $options = []): self
     {
@@ -83,6 +87,7 @@ class Scrape
             ['selector' => $selector],
             $options
         );
+
         return $this;
     }
 
@@ -95,6 +100,7 @@ class Scrape
             'fn' => $function,
             'timeout' => $timeout,
         ];
+
         return $this;
     }
 
@@ -107,6 +113,7 @@ class Scrape
             'event' => $event,
             'timeout' => $timeout,
         ];
+
         return $this;
     }
 
@@ -119,6 +126,7 @@ class Scrape
             'username' => $username,
             'password' => $password,
         ];
+
         return $this;
     }
 
@@ -128,17 +136,19 @@ class Scrape
     public function ignoreHTTPSErrors(bool $ignore = true): self
     {
         $this->options['ignoreHTTPSErrors'] = $ignore;
+
         return $this;
     }
 
     /**
      * Set multiple options at once.
      *
-     * @param array<string,mixed> $options
+     * @param  array<string,mixed>  $options
      */
     public function withOptions(array $options): self
     {
         $this->options = array_merge_recursive($this->options, $options);
+
         return $this;
     }
 
@@ -154,7 +164,7 @@ class Scrape
         try {
             $request = new Request(
                 'POST',
-                $this->client->url() . '/scrape?token=' . $this->client->token(),
+                $this->client->url().'/scrape?token='.$this->client->token(),
                 [
                     'Content-Type' => 'application/json',
                 ],
@@ -176,7 +186,7 @@ class Scrape
      */
     protected function validateOptions(): void
     {
-        if (!isset($this->options['url']) && !isset($this->options['html'])) {
+        if (! isset($this->options['url']) && ! isset($this->options['html'])) {
             throw ScrapeException::invalidOptions('Either URL or HTML content must be provided');
         }
 
@@ -184,4 +194,4 @@ class Scrape
             throw ScrapeException::invalidOptions('At least one element selector must be provided');
         }
     }
-} 
+}

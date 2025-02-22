@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace MillerPHP\LaravelBrowserless\Features;
 
-use MillerPHP\LaravelBrowserless\Contracts\ClientContract;
-use MillerPHP\LaravelBrowserless\Responses\MetricsResponse;
-use MillerPHP\LaravelBrowserless\Exceptions\MetricsException;
 use GuzzleHttp\Psr7\Request;
+use MillerPHP\LaravelBrowserless\Contracts\ClientContract;
+use MillerPHP\LaravelBrowserless\Exceptions\MetricsException;
+use MillerPHP\LaravelBrowserless\Responses\MetricsResponse;
 
 class Metrics
 {
@@ -28,7 +28,7 @@ class Metrics
         try {
             $request = new Request(
                 'GET',
-                $this->client->url() . '/metrics?token=' . $this->client->token(),
+                $this->client->url().'/metrics?token='.$this->client->token(),
                 [
                     'Content-Type' => 'application/json',
                     'Cache-Control' => 'no-cache',
@@ -51,7 +51,7 @@ class Metrics
         try {
             $request = new Request(
                 'GET',
-                $this->client->url() . '/metrics/total?token=' . $this->client->token(),
+                $this->client->url().'/metrics/total?token='.$this->client->token(),
                 [
                     'Content-Type' => 'application/json',
                     'Cache-Control' => 'no-cache',
@@ -63,4 +63,4 @@ class Metrics
             throw MetricsException::fromResponse($e);
         }
     }
-} 
+}
