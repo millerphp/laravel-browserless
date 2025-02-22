@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace MillerPHP\LaravelBrowserless\Features;
 
-use MillerPHP\LaravelBrowserless\Contracts\ClientContract;
-use MillerPHP\LaravelBrowserless\Responses\BQLResponse;
-use MillerPHP\LaravelBrowserless\Exceptions\BQLException;
 use GuzzleHttp\Psr7\Request;
-use MillerPHP\LaravelBrowserless\Features\Concerns\HasQueryParameters;
+use MillerPHP\LaravelBrowserless\Contracts\ClientContract;
+use MillerPHP\LaravelBrowserless\Exceptions\BQLException;
 use MillerPHP\LaravelBrowserless\Features\Concerns\HasOptions;
+use MillerPHP\LaravelBrowserless\Features\Concerns\HasQueryParameters;
+use MillerPHP\LaravelBrowserless\Responses\BQLResponse;
 
 class BQL
 {
-    use HasQueryParameters;
     use HasOptions;
+    use HasQueryParameters;
 
     /**
      * The options for the BQL query.
@@ -40,17 +40,19 @@ class BQL
     public function query(string $query): self
     {
         $this->options['query'] = $query;
+
         return $this;
     }
 
     /**
      * Set the variables for the query.
      *
-     * @param array<string,mixed> $variables
+     * @param  array<string,mixed>  $variables
      */
     public function variables(array $variables): self
     {
         $this->options['variables'] = $variables;
+
         return $this;
     }
 
@@ -60,6 +62,7 @@ class BQL
     public function operationName(?string $name): self
     {
         $this->options['operationName'] = $name;
+
         return $this;
     }
 
@@ -69,6 +72,7 @@ class BQL
     public function humanLike(bool $enabled = true): self
     {
         $this->addQueryParameter('humanlike', $enabled ? 'true' : 'false');
+
         return $this;
     }
 
@@ -78,6 +82,7 @@ class BQL
     public function reconnect(bool $enabled = true): self
     {
         $this->addQueryParameter('reconnect', $enabled ? 'true' : 'false');
+
         return $this;
     }
 
@@ -87,6 +92,7 @@ class BQL
     public function stealth(bool $enabled = true): self
     {
         $this->addQueryParameter('stealth', $enabled ? 'true' : 'false');
+
         return $this;
     }
 
@@ -98,6 +104,7 @@ class BQL
         if ($proxy) {
             $this->addQueryParameter('proxy', $proxy);
         }
+
         return $this;
     }
 
@@ -107,6 +114,7 @@ class BQL
     public function timeout(int $milliseconds): self
     {
         $this->addQueryParameter('timeout', (string) $milliseconds);
+
         return $this;
     }
 
@@ -120,7 +128,7 @@ class BQL
         try {
             $request = new Request(
                 'POST',
-                $this->buildQueryString($this->client->url() . '/chrome/bql?token=' . $this->client->token()),
+                $this->buildQueryString($this->client->url().'/chrome/bql?token='.$this->client->token()),
                 [
                     'Content-Type' => 'application/json',
                 ],
@@ -134,4 +142,4 @@ class BQL
             throw BQLException::fromResponse($e);
         }
     }
-} 
+}

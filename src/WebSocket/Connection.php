@@ -30,8 +30,9 @@ class Connection
         try {
             $url = str_replace('http', 'ws', $this->browserless->url());
             $this->client = new Client(
-                $url . '/' . $this->endpoint . '?token=' . $this->browserless->token()
+                $url.'/'.$this->endpoint.'?token='.$this->browserless->token()
             );
+
             return $this;
         } catch (\Throwable $e) {
             throw WebSocketException::connectionFailed($e->getMessage());
@@ -45,12 +46,13 @@ class Connection
      */
     public function send(string $message): string
     {
-        if (!$this->client) {
+        if (! $this->client) {
             throw WebSocketException::notConnected();
         }
 
         try {
             $this->client->send($message);
+
             return $this->client->receive();
         } catch (\Throwable $e) {
             throw WebSocketException::sendFailed($e->getMessage());
@@ -67,4 +69,4 @@ class Connection
             $this->client = null;
         }
     }
-} 
+}

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace MillerPHP\LaravelBrowserless\Responses;
 
-use Psr\Http\Message\ResponseInterface;
 use MillerPHP\LaravelBrowserless\Exceptions\PerformanceException;
+use Psr\Http\Message\ResponseInterface;
 
 class PerformanceResponse
 {
@@ -33,6 +33,7 @@ class PerformanceResponse
      * Get the performance data as an array.
      *
      * @return array<string,mixed>
+     *
      * @throws PerformanceException
      */
     public function data(): array
@@ -41,7 +42,7 @@ class PerformanceResponse
             try {
                 $this->data = json_decode($this->content(), true, 512, JSON_THROW_ON_ERROR);
             } catch (\JsonException $e) {
-                throw PerformanceException::invalidResponse('Response is not valid JSON: ' . $e->getMessage());
+                throw PerformanceException::invalidResponse('Response is not valid JSON: '.$e->getMessage());
             }
         }
 
@@ -54,6 +55,7 @@ class PerformanceResponse
     public function categoryScore(string $category): ?float
     {
         $data = $this->data();
+
         return $data['categories'][$category]['score'] ?? null;
     }
 
@@ -66,7 +68,7 @@ class PerformanceResponse
     {
         $scores = [];
         $data = $this->data();
-        
+
         foreach ($data['categories'] ?? [] as $category => $info) {
             $scores[$category] = $info['score'];
         }
@@ -82,6 +84,7 @@ class PerformanceResponse
     public function audit(string $auditId): ?array
     {
         $data = $this->data();
+
         return $data['audits'][$auditId] ?? null;
     }
 
@@ -118,4 +121,4 @@ class PerformanceResponse
     {
         return $this->response;
     }
-} 
+}

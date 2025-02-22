@@ -19,4 +19,4 @@ class SessionsException extends BrowserlessException
     {
         return new self("Invalid sessions response: {$message}");
     }
-} 
+}

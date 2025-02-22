@@ -19,7 +19,7 @@ class Client implements ClientContract
     /**
      * The PSR-18 HTTP Client itself.
      */
-    public null|ClientInterface $http = null;
+    public ?ClientInterface $http = null;
 
     /**
      * Create a new SDK API Client.
@@ -27,8 +27,7 @@ class Client implements ClientContract
     public function __construct(
         protected readonly string $apiToken,
         protected readonly string $url,
-    ) {
-    }
+    ) {}
 
     /**
      * @param  array<int,Plugin>  $plugins
@@ -76,7 +75,7 @@ class Client implements ClientContract
      */
     public function send(RequestInterface $request): ResponseInterface
     {
-        if ( ! $this->http instanceof ClientInterface) {
+        if (! $this->http instanceof ClientInterface) {
             throw new ClientSetupException(
                 message: 'You have not setup the client correctly, you need to set the HTTP Client using `setup` or `client`.',
             );

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace MillerPHP\LaravelBrowserless\Responses;
 
-use Psr\Http\Message\ResponseInterface;
 use MillerPHP\LaravelBrowserless\Exceptions\ScrapeException;
+use Psr\Http\Message\ResponseInterface;
 
 class ScrapeResponse
 {
@@ -28,6 +28,7 @@ class ScrapeResponse
      * Get the scraped data as an array.
      *
      * @return array<string,mixed>
+     *
      * @throws ScrapeException
      */
     public function data(): array
@@ -35,7 +36,7 @@ class ScrapeResponse
         try {
             return json_decode($this->content(), true, 512, JSON_THROW_ON_ERROR);
         } catch (\JsonException $e) {
-            throw ScrapeException::invalidResponse('Response is not valid JSON: ' . $e->getMessage());
+            throw ScrapeException::invalidResponse('Response is not valid JSON: '.$e->getMessage());
         }
     }
 
@@ -43,6 +44,7 @@ class ScrapeResponse
      * Get the results for a specific element selector.
      *
      * @return array<mixed>
+     *
      * @throws ScrapeException
      */
     public function results(string $selector): array
@@ -53,6 +55,7 @@ class ScrapeResponse
                 return $result['results'];
             }
         }
+
         return [];
     }
 
@@ -60,6 +63,7 @@ class ScrapeResponse
      * Get all scraped results.
      *
      * @return array<array{selector: string, results: array<mixed>}>
+     *
      * @throws ScrapeException
      */
     public function allResults(): array
@@ -90,4 +94,4 @@ class ScrapeResponse
     {
         return $this->response;
     }
-} 
+}

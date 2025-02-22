@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace MillerPHP\LaravelBrowserless\Features;
 
-use MillerPHP\LaravelBrowserless\Contracts\ClientContract;
-use MillerPHP\LaravelBrowserless\Responses\PerformanceResponse;
-use MillerPHP\LaravelBrowserless\Exceptions\PerformanceException;
 use GuzzleHttp\Psr7\Request;
+use MillerPHP\LaravelBrowserless\Contracts\ClientContract;
+use MillerPHP\LaravelBrowserless\Exceptions\PerformanceException;
+use MillerPHP\LaravelBrowserless\Responses\PerformanceResponse;
 
 class Performance
 {
@@ -31,13 +31,14 @@ class Performance
     public function url(string $url): self
     {
         $this->options['url'] = $url;
+
         return $this;
     }
 
     /**
      * Set specific categories to analyze.
      *
-     * @param array<string> $categories
+     * @param  array<string>  $categories
      */
     public function categories(array $categories): self
     {
@@ -47,13 +48,14 @@ class Performance
                 'onlyCategories' => $categories,
             ],
         ];
+
         return $this;
     }
 
     /**
      * Set specific audits to run.
      *
-     * @param array<string> $audits
+     * @param  array<string>  $audits
      */
     public function audits(array $audits): self
     {
@@ -63,6 +65,7 @@ class Performance
                 'onlyAudits' => $audits,
             ],
         ];
+
         return $this;
     }
 
@@ -78,7 +81,7 @@ class Performance
         try {
             $request = new Request(
                 'POST',
-                $this->client->url() . '/performance?token=' . $this->client->token(),
+                $this->client->url().'/performance?token='.$this->client->token(),
                 [
                     'Content-Type' => 'application/json',
                     'Cache-Control' => 'no-cache',
@@ -101,8 +104,8 @@ class Performance
      */
     protected function validateOptions(): void
     {
-        if (!isset($this->options['url'])) {
+        if (! isset($this->options['url'])) {
             throw PerformanceException::invalidOptions('URL must be provided');
         }
     }
-} 
+}

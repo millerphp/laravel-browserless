@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace MillerPHP\LaravelBrowserless\Responses;
 
-use Psr\Http\Message\ResponseInterface;
 use MillerPHP\LaravelBrowserless\Exceptions\ScreenshotException;
+use Psr\Http\Message\ResponseInterface;
 
 class ScreenshotResponse
 {
@@ -33,7 +33,7 @@ class ScreenshotResponse
     {
         try {
             $result = file_put_contents($path, $this->content());
-            
+
             if ($result === false) {
                 throw new \RuntimeException("Failed to save screenshot to {$path}");
             }
@@ -52,6 +52,7 @@ class ScreenshotResponse
     public function saveAs(string $path): string
     {
         $this->save($path);
+
         return $path;
     }
 
@@ -96,12 +97,12 @@ class ScreenshotResponse
             throw new \RuntimeException('Headers have already been sent');
         }
 
-        $filename = $filename ?? 'screenshot-' . date('Y-m-d-His') . '.png';
+        $filename = $filename ?? 'screenshot-'.date('Y-m-d-His').'.png';
         $contentType = $this->getContentType();
 
-        header('Content-Type: ' . $contentType);
-        header('Content-Disposition: attachment; filename="' . $filename . '"');
-        header('Content-Length: ' . $this->size());
+        header('Content-Type: '.$contentType);
+        header('Content-Disposition: attachment; filename="'.$filename.'"');
+        header('Content-Length: '.$this->size());
         header('Cache-Control: no-cache, no-store, must-revalidate');
         header('Pragma: no-cache');
         header('Expires: 0');
@@ -119,12 +120,12 @@ class ScreenshotResponse
             throw new \RuntimeException('Headers have already been sent');
         }
 
-        $filename = $filename ?? 'screenshot-' . date('Y-m-d-His') . '.png';
+        $filename = $filename ?? 'screenshot-'.date('Y-m-d-His').'.png';
         $contentType = $this->getContentType();
 
-        header('Content-Type: ' . $contentType);
-        header('Content-Disposition: inline; filename="' . $filename . '"');
-        header('Content-Length: ' . $this->size());
+        header('Content-Type: '.$contentType);
+        header('Content-Disposition: inline; filename="'.$filename.'"');
+        header('Content-Length: '.$this->size());
         header('Cache-Control: no-cache, no-store, must-revalidate');
         header('Pragma: no-cache');
         header('Expires: 0');
@@ -139,7 +140,7 @@ class ScreenshotResponse
     protected function getContentType(): string
     {
         $contentType = $this->response->getHeaderLine('Content-Type');
-        
+
         if (empty($contentType)) {
             // Default to PNG if no content type is set
             return 'image/png';
@@ -147,4 +148,4 @@ class ScreenshotResponse
 
         return $contentType;
     }
-} 
+}

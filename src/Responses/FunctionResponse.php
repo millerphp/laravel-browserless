@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace MillerPHP\LaravelBrowserless\Responses;
 
-use Psr\Http\Message\ResponseInterface;
 use MillerPHP\LaravelBrowserless\Exceptions\FunctionException;
+use Psr\Http\Message\ResponseInterface;
 
 class FunctionResponse
 {
@@ -28,6 +28,7 @@ class FunctionResponse
      * Get the response data as an array.
      *
      * @return array<mixed>
+     *
      * @throws FunctionException
      */
     public function data(): array
@@ -35,7 +36,7 @@ class FunctionResponse
         try {
             return json_decode($this->content(), true, 512, JSON_THROW_ON_ERROR);
         } catch (\JsonException $e) {
-            throw FunctionException::invalidResponse('Response is not valid JSON: ' . $e->getMessage());
+            throw FunctionException::invalidResponse('Response is not valid JSON: '.$e->getMessage());
         }
     }
 
@@ -62,4 +63,4 @@ class FunctionResponse
     {
         return $this->response;
     }
-} 
+}

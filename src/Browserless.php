@@ -10,30 +10,30 @@ use Http\Discovery\Psr18ClientDiscovery;
 use MillerPHP\LaravelBrowserless\Contracts\ClientContract;
 use MillerPHP\LaravelBrowserless\Exceptions\BrowserlessException;
 use MillerPHP\LaravelBrowserless\Exceptions\ClientSetupException;
-use MillerPHP\LaravelBrowserless\Features\PDF;
-use MillerPHP\LaravelBrowserless\Features\Screenshot;
+use MillerPHP\LaravelBrowserless\Features\Config;
 use MillerPHP\LaravelBrowserless\Features\Content;
 use MillerPHP\LaravelBrowserless\Features\Download;
 use MillerPHP\LaravelBrowserless\Features\ExecuteFunction;
-use MillerPHP\LaravelBrowserless\Features\Unblock;
-use MillerPHP\LaravelBrowserless\Features\Scrape;
-use MillerPHP\LaravelBrowserless\Features\Performance;
-use MillerPHP\LaravelBrowserless\Features\Sessions;
-use MillerPHP\LaravelBrowserless\Features\Config;
 use MillerPHP\LaravelBrowserless\Features\Metrics;
+use MillerPHP\LaravelBrowserless\Features\PDF;
+use MillerPHP\LaravelBrowserless\Features\Performance;
+use MillerPHP\LaravelBrowserless\Features\Scrape;
+use MillerPHP\LaravelBrowserless\Features\Screenshot;
+use MillerPHP\LaravelBrowserless\Features\Sessions;
+use MillerPHP\LaravelBrowserless\Features\Unblock;
+use MillerPHP\LaravelBrowserless\WebSocket\PlaywrightConnection;
+use MillerPHP\LaravelBrowserless\WebSocket\PuppeteerConnection;
 use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use MillerPHP\LaravelBrowserless\WebSocket\PuppeteerConnection;
-use MillerPHP\LaravelBrowserless\WebSocket\PlaywrightConnection;
 
 class Browserless implements ClientContract
 {
     /**
      * The PSR-18 HTTP Client itself.
      */
-    protected null|ClientInterface $http = null;
+    protected ?ClientInterface $http = null;
 
     /**
      * Global options for all requests.
@@ -96,6 +96,7 @@ class Browserless implements ClientContract
     public function setTimeout(int $timeout): self
     {
         $this->globalOptions['timeout'] = $timeout;
+
         return $this;
     }
 
@@ -105,6 +106,7 @@ class Browserless implements ClientContract
     public function setIgnoreHTTPSErrors(bool $ignore): self
     {
         $this->globalOptions['ignoreHTTPSErrors'] = $ignore;
+
         return $this;
     }
 
@@ -114,6 +116,7 @@ class Browserless implements ClientContract
     public function setStealth(bool $stealth): self
     {
         $this->globalOptions['stealth'] = $stealth;
+
         return $this;
     }
 
@@ -123,17 +126,19 @@ class Browserless implements ClientContract
     public function setProxy(?string $proxy): self
     {
         $this->globalOptions['proxy'] = $proxy;
+
         return $this;
     }
 
     /**
      * Set global headers.
      *
-     * @param array<string,string> $headers
+     * @param  array<string,string>  $headers
      */
     public function setHeaders(array $headers): self
     {
         $this->globalOptions['headers'] = $headers;
+
         return $this;
     }
 
@@ -153,8 +158,8 @@ class Browserless implements ClientContract
     protected function getBaseUrl(): string
     {
         $url = rtrim($this->url, '/');
-        
-        if (!preg_match('~^https?://~i', $url)) {
+
+        if (! preg_match('~^https?://~i', $url)) {
             throw new BrowserlessException('Invalid URL format. Must include http:// or https://');
         }
 
@@ -173,7 +178,7 @@ class Browserless implements ClientContract
             );
         } catch (\Throwable $e) {
             throw new ClientSetupException(
-                message: 'Failed to setup HTTP client: ' . $e->getMessage(),
+                message: 'Failed to setup HTTP client: '.$e->getMessage(),
                 previous: $e
             );
         }
@@ -236,7 +241,7 @@ class Browserless implements ClientContract
             return $response;
         } catch (ClientExceptionInterface $e) {
             throw new BrowserlessException(
-                'Failed to send request: ' . $e->getMessage(),
+                'Failed to send request: '.$e->getMessage(),
                 previous: $e
             );
         }
@@ -349,11 +354,12 @@ class Browserless implements ClientContract
     /**
      * Set browser launch arguments.
      *
-     * @param array<string> $args
+     * @param  array<string>  $args
      */
     public function setLaunchArgs(array $args): self
     {
         $this->globalOptions['args'] = $args;
+
         return $this;
     }
 
@@ -376,6 +382,7 @@ class Browserless implements ClientContract
             'isLandscape' => $isLandscape,
             'isMobile' => $isMobile,
         ];
+
         return $this;
     }
 
@@ -385,6 +392,7 @@ class Browserless implements ClientContract
     public function setDevTools(bool $enabled): self
     {
         $this->globalOptions['devtools'] = $enabled;
+
         return $this;
     }
 
@@ -394,31 +402,34 @@ class Browserless implements ClientContract
     public function setDumpio(bool $enabled): self
     {
         $this->globalOptions['dumpio'] = $enabled;
+
         return $this;
     }
 
     /**
      * Set headless mode (true, false, or 'shell').
      *
-     * @param bool|'shell' $mode
+     * @param  bool|'shell'  $mode
      */
     public function setHeadless(bool|string $mode): self
     {
-        if (!is_bool($mode) && $mode !== 'shell') {
+        if (! is_bool($mode) && $mode !== 'shell') {
             throw new BrowserlessException('Headless mode must be true, false, or "shell"');
         }
         $this->globalOptions['headless'] = $mode;
+
         return $this;
     }
 
     /**
      * Set whether to ignore default arguments.
      *
-     * @param bool|array<string> $value
+     * @param  bool|array<string>  $value
      */
     public function setIgnoreDefaultArgs(bool|array $value): self
     {
         $this->globalOptions['ignoreDefaultArgs'] = $value;
+
         return $this;
     }
 
@@ -428,6 +439,7 @@ class Browserless implements ClientContract
     public function setSlowMo(int $milliseconds): self
     {
         $this->globalOptions['slowMo'] = $milliseconds;
+
         return $this;
     }
 
@@ -437,6 +449,7 @@ class Browserless implements ClientContract
     public function setUserDataDir(string $dir): self
     {
         $this->globalOptions['userDataDir'] = $dir;
+
         return $this;
     }
 
@@ -446,6 +459,7 @@ class Browserless implements ClientContract
     public function setWaitForInitialPage(bool $wait): self
     {
         $this->globalOptions['waitForInitialPage'] = $wait;
+
         return $this;
     }
 }

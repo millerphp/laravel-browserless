@@ -7,4 +7,4 @@ namespace MillerPHP\LaravelBrowserless\WebSocket;
 class PuppeteerConnection extends Connection
 {
     protected string $endpoint = 'puppeteer';
-} 
+}

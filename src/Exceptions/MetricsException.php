@@ -19,4 +19,4 @@ class MetricsException extends BrowserlessException
     {
         return new self("Invalid metrics response: {$message}");
     }
-} 
+}

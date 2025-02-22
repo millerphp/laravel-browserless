@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace MillerPHP\LaravelBrowserless\Features;
 
-use MillerPHP\LaravelBrowserless\Contracts\ClientContract;
-use MillerPHP\LaravelBrowserless\Responses\DownloadResponse;
-use MillerPHP\LaravelBrowserless\Exceptions\DownloadException;
 use GuzzleHttp\Psr7\Request;
+use MillerPHP\LaravelBrowserless\Contracts\ClientContract;
+use MillerPHP\LaravelBrowserless\Exceptions\DownloadException;
+use MillerPHP\LaravelBrowserless\Responses\DownloadResponse;
 
 class Download
 {
@@ -33,17 +33,19 @@ class Download
     public function code(string $code): self
     {
         $this->options['code'] = $code;
+
         return $this;
     }
 
     /**
      * Set context values for the code execution.
      *
-     * @param array<string,mixed> $context
+     * @param  array<string,mixed>  $context
      */
     public function context(array $context): self
     {
         $this->options['context'] = $context;
+
         return $this;
     }
 
@@ -53,6 +55,7 @@ class Download
     public function waitForNetworkIdle(bool $wait = true): self
     {
         $this->options['gotoOptions']['waitUntil'] = $wait ? 'networkidle0' : 'load';
+
         return $this;
     }
 
@@ -62,6 +65,7 @@ class Download
     public function timeout(int $milliseconds): self
     {
         $this->options['gotoOptions']['timeout'] = $milliseconds;
+
         return $this;
     }
 
@@ -74,17 +78,19 @@ class Download
             'username' => $username,
             'password' => $password,
         ];
+
         return $this;
     }
 
     /**
      * Set cookies for the page.
      *
-     * @param array<array{name: string, value: string, domain: string}> $cookies
+     * @param  array<array{name: string, value: string, domain: string}>  $cookies
      */
     public function cookies(array $cookies): self
     {
         $this->options['cookies'] = $cookies;
+
         return $this;
     }
 
@@ -94,17 +100,19 @@ class Download
     public function ignoreHTTPSErrors(bool $ignore = true): self
     {
         $this->options['ignoreHTTPSErrors'] = $ignore;
+
         return $this;
     }
 
     /**
      * Set multiple options at once.
      *
-     * @param array<string,mixed> $options
+     * @param  array<string,mixed>  $options
      */
     public function withOptions(array $options): self
     {
         $this->options = array_merge_recursive($this->options, $options);
+
         return $this;
     }
 
@@ -120,7 +128,7 @@ class Download
         try {
             $request = new Request(
                 'POST',
-                $this->client->url() . '/download?token=' . $this->client->token(),
+                $this->client->url().'/download?token='.$this->client->token(),
                 [
                     'Content-Type' => 'application/json',
                 ],
@@ -142,8 +150,8 @@ class Download
      */
     protected function validateOptions(): void
     {
-        if (!isset($this->options['code'])) {
+        if (! isset($this->options['code'])) {
             throw DownloadException::invalidOptions('JavaScript code must be provided');
         }
     }
-} 
+}

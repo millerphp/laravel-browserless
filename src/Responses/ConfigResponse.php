@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace MillerPHP\LaravelBrowserless\Responses;
 
-use Psr\Http\Message\ResponseInterface;
 use MillerPHP\LaravelBrowserless\Exceptions\ConfigException;
+use Psr\Http\Message\ResponseInterface;
 
 class ConfigResponse
 {
@@ -33,6 +33,7 @@ class ConfigResponse
      * Get the configuration data as an array.
      *
      * @return array<string,mixed>
+     *
      * @throws ConfigException
      */
     public function data(): array
@@ -41,7 +42,7 @@ class ConfigResponse
             try {
                 $this->data = json_decode($this->content(), true, 512, JSON_THROW_ON_ERROR);
             } catch (\JsonException $e) {
-                throw ConfigException::invalidResponse('Response is not valid JSON: ' . $e->getMessage());
+                throw ConfigException::invalidResponse('Response is not valid JSON: '.$e->getMessage());
             }
         }
 
@@ -50,8 +51,6 @@ class ConfigResponse
 
     /**
      * Get a specific configuration value.
-     *
-     * @return mixed
      */
     public function get(string $key): mixed
     {
@@ -81,4 +80,4 @@ class ConfigResponse
     {
         return $this->response;
     }
-} 
+}

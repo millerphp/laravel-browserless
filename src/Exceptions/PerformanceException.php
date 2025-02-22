@@ -24,4 +24,4 @@ class PerformanceException extends BrowserlessException
     {
         return new self("Invalid performance response: {$message}");
     }
-} 
+}

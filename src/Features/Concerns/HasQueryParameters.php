@@ -19,6 +19,7 @@ trait HasQueryParameters
     public function proxy(bool $enabled = true): self
     {
         $this->queryParameters['proxy'] = $enabled;
+
         return $this;
     }
 
@@ -28,6 +29,7 @@ trait HasQueryParameters
     public function stealth(bool $enabled = true): self
     {
         $this->queryParameters['stealth'] = $enabled;
+
         return $this;
     }
 
@@ -37,6 +39,7 @@ trait HasQueryParameters
     public function keepalive(bool $enabled = true): self
     {
         $this->queryParameters['keepalive'] = $enabled;
+
         return $this;
     }
 
@@ -58,6 +61,7 @@ trait HasQueryParameters
         }
 
         $separator = str_contains($baseUrl, '?') ? '&' : '?';
-        return $baseUrl . $separator . http_build_query($this->queryParameters);
+
+        return $baseUrl.$separator.http_build_query($this->queryParameters);
     }
-} 
+}

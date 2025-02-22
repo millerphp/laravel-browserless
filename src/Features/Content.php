@@ -4,26 +4,26 @@ declare(strict_types=1);
 
 namespace MillerPHP\LaravelBrowserless\Features;
 
-use MillerPHP\LaravelBrowserless\Contracts\ClientContract;
-use MillerPHP\LaravelBrowserless\Responses\ContentResponse;
-use MillerPHP\LaravelBrowserless\Exceptions\ContentException;
 use GuzzleHttp\Psr7\Request;
-use MillerPHP\LaravelBrowserless\Features\Concerns\HasQueryParameters;
-use MillerPHP\LaravelBrowserless\Features\Concerns\HasOptions;
-use MillerPHP\LaravelBrowserless\Features\Concerns\HasNavigationOptions;
-use MillerPHP\LaravelBrowserless\Features\Concerns\HasCookieManagement;
-use MillerPHP\LaravelBrowserless\Features\Concerns\HasResourceInjection;
+use MillerPHP\LaravelBrowserless\Contracts\ClientContract;
+use MillerPHP\LaravelBrowserless\Exceptions\ContentException;
 use MillerPHP\LaravelBrowserless\Features\Concerns\HasAuthentication;
+use MillerPHP\LaravelBrowserless\Features\Concerns\HasCookieManagement;
+use MillerPHP\LaravelBrowserless\Features\Concerns\HasNavigationOptions;
+use MillerPHP\LaravelBrowserless\Features\Concerns\HasOptions;
+use MillerPHP\LaravelBrowserless\Features\Concerns\HasQueryParameters;
+use MillerPHP\LaravelBrowserless\Features\Concerns\HasResourceInjection;
 use MillerPHP\LaravelBrowserless\Features\Concerns\HasViewport;
+use MillerPHP\LaravelBrowserless\Responses\ContentResponse;
 
 class Content
 {
-    use HasQueryParameters;
-    use HasOptions;
-    use HasNavigationOptions;
-    use HasCookieManagement;
-    use HasResourceInjection;
     use HasAuthentication;
+    use HasCookieManagement;
+    use HasNavigationOptions;
+    use HasOptions;
+    use HasQueryParameters;
+    use HasResourceInjection;
     use HasViewport;
 
     /**
@@ -49,6 +49,7 @@ class Content
     public function html(string $html): self
     {
         $this->options['html'] = $html;
+
         return $this;
     }
 
@@ -58,6 +59,7 @@ class Content
     public function url(string $url): self
     {
         $this->options['url'] = $url;
+
         return $this;
     }
 
@@ -72,22 +74,24 @@ class Content
     /**
      * Set resource types to reject during navigation.
      *
-     * @param array<string> $types Resource types to reject (e.g., ['image', 'stylesheet', 'script'])
+     * @param  array<string>  $types  Resource types to reject (e.g., ['image', 'stylesheet', 'script'])
      */
     public function rejectResourceTypes(array $types): self
     {
         $this->options['rejectResourceTypes'] = $types;
+
         return $this;
     }
 
     /**
      * Reject requests matching specific patterns.
      *
-     * @param array<string> $patterns
+     * @param  array<string>  $patterns
      */
     public function rejectRequestPatterns(array $patterns): self
     {
         $this->options['rejectRequestPattern'] = $patterns;
+
         return $this;
     }
 
@@ -97,6 +101,7 @@ class Content
     public function bestAttempt(bool $enabled = true): self
     {
         $this->options['bestAttempt'] = $enabled;
+
         return $this;
     }
 
@@ -109,6 +114,7 @@ class Content
             'event' => $event,
             'timeout' => $timeout,
         ];
+
         return $this;
     }
 
@@ -121,6 +127,7 @@ class Content
             'fn' => $function,
             'timeout' => $timeout,
         ];
+
         return $this;
     }
 
@@ -139,23 +146,25 @@ class Content
             'hidden' => $hidden,
             'visible' => $visible,
         ]);
+
         return $this;
     }
 
     /**
      * Set multiple options at once.
      *
-     * @param array<string,mixed> $options
+     * @param  array<string,mixed>  $options
      */
     public function withOptions(array $options): self
     {
         $this->options = array_merge_recursive($this->options, $options);
+
         return $this;
     }
 
     /**
      * Set content handling options.
-     * 
+     *
      * @param array{
      *   stripComments?: bool,
      *   minify?: bool,
@@ -167,12 +176,13 @@ class Content
     public function contentOptions(array $options): self
     {
         $this->options['contentOptions'] = $options;
+
         return $this;
     }
 
     /**
      * Extract specific elements from the page.
-     * 
+     *
      * @param array{
      *   selector: string,
      *   attribute?: string,
@@ -182,12 +192,13 @@ class Content
     public function extractElements(array $elements): self
     {
         $this->options['extractElements'] = $elements;
+
         return $this;
     }
 
     /**
      * Evaluate JavaScript on elements.
-     * 
+     *
      * @param array{
      *   selector: string,
      *   script: string,
@@ -197,17 +208,19 @@ class Content
     public function evaluateSelector(array $evaluations): self
     {
         $this->options['evaluateSelector'] = $evaluations;
+
         return $this;
     }
 
     /**
      * Block specific domains.
-     * 
-     * @param string[] $domains
+     *
+     * @param  string[]  $domains
      */
     public function domainBlocklist(array $domains): self
     {
         $this->options['domainBlocklist'] = $domains;
+
         return $this;
     }
 
@@ -217,12 +230,13 @@ class Content
     public function transformResponse(string $transformScript): self
     {
         $this->options['transformResponse'] = $transformScript;
+
         return $this;
     }
 
     /**
      * Wait for specific DOM event.
-     * 
+     *
      * @param array{
      *   event: string,
      *   selector?: string,
@@ -232,12 +246,13 @@ class Content
     public function waitForDOMEvent(array $options): self
     {
         $this->options['waitForDOMEvent'] = $options;
+
         return $this;
     }
 
     /**
      * Configure HTML attribute removal.
-     * 
+     *
      * @param array{
      *   data?: bool,
      *   aria?: bool,
@@ -248,12 +263,13 @@ class Content
     public function removeAttributes(array $options): self
     {
         $this->options['removeAttributes'] = $options;
+
         return $this;
     }
 
     /**
      * Configure HTML sanitization.
-     * 
+     *
      * @param array{
      *   allowedTags?: string[],
      *   allowedAttributes?: array<string,string[]>,
@@ -264,12 +280,13 @@ class Content
     public function sanitizeHtml(array $options): self
     {
         $this->options['sanitizeHtml'] = $options;
+
         return $this;
     }
 
     /**
      * Configure response transformation.
-     * 
+     *
      * @param array{
      *   minify?: bool,
      *   beautify?: bool,
@@ -280,12 +297,13 @@ class Content
     public function transformationOptions(array $options): self
     {
         $this->options['transformationOptions'] = $options;
+
         return $this;
     }
 
     /**
      * Set response format.
-     * 
+     *
      * @param array{
      *   type: 'html'|'text'|'json',
      *   pretty?: bool,
@@ -296,12 +314,13 @@ class Content
     public function setResponseFormat(array $options): self
     {
         $this->options['responseFormat'] = $options;
+
         return $this;
     }
 
     /**
      * Configure DOM snapshot options.
-     * 
+     *
      * @param array{
      *   computedStyles?: string[],
      *   includeDOMRects?: bool,
@@ -312,23 +331,25 @@ class Content
     public function setDOMSnapshot(array $options): self
     {
         $this->options['domSnapshot'] = $options;
+
         return $this;
     }
 
     /**
      * Set resource loading priorities.
-     * 
-     * @param array<string,string> $priorities Map of resource types to priorities ('high'|'medium'|'low')
+     *
+     * @param  array<string,string>  $priorities  Map of resource types to priorities ('high'|'medium'|'low')
      */
     public function setResourceLoadingPriority(array $priorities): self
     {
         $this->options['resourcePriorities'] = $priorities;
+
         return $this;
     }
 
     /**
      * Set custom headers per request pattern.
-     * 
+     *
      * @param array{
      *   pattern: string,
      *   headers: array<string,string>
@@ -337,12 +358,13 @@ class Content
     public function setCustomHeaders(array $headers): self
     {
         $this->options['customHeaders'] = $headers;
+
         return $this;
     }
 
     /**
      * Configure resource interception.
-     * 
+     *
      * @param array{
      *   patterns: array{
      *     urlPattern: string,
@@ -360,12 +382,13 @@ class Content
     public function setResourceInterception(array $options): self
     {
         $this->options['resourceInterception'] = $options;
+
         return $this;
     }
 
     /**
      * Set DOM manipulation options.
-     * 
+     *
      * @param array{
      *   removeElements?: string[],
      *   modifyElements?: array{
@@ -384,12 +407,13 @@ class Content
     public function setDOMManipulation(array $options): self
     {
         $this->options['domManipulation'] = $options;
+
         return $this;
     }
 
     /**
      * Set granular network conditions.
-     * 
+     *
      * @param array{
      *   latency?: array{
      *     min: int,
@@ -408,12 +432,13 @@ class Content
     public function setNetworkConditions(array $options): self
     {
         $this->options['networkConditions'] = $options;
+
         return $this;
     }
 
     /**
      * Configure script execution behavior.
-     * 
+     *
      * @param array{
      *   allowedSources?: string[],
      *   blockInlineScripts?: bool,
@@ -426,12 +451,13 @@ class Content
     public function setScriptExecution(array $options): self
     {
         $this->options['scriptExecution'] = $options;
+
         return $this;
     }
 
     /**
      * Set advanced request handling options.
-     * 
+     *
      * @param array{
      *   caching?: array{
      *     enabled: bool,
@@ -453,12 +479,13 @@ class Content
     public function setRequestHandling(array $options): self
     {
         $this->options['requestHandling'] = $options;
+
         return $this;
     }
 
     /**
      * Configure response validation.
-     * 
+     *
      * @param array{
      *   statusCodes?: array{min: int, max: int},
      *   contentTypes?: string[],
@@ -472,12 +499,13 @@ class Content
     public function setResponseValidation(array $options): self
     {
         $this->options['responseValidation'] = $options;
+
         return $this;
     }
 
     /**
      * Set additional security options.
-     * 
+     *
      * @param array{
      *   sandbox?: array{
      *     enabled: bool,
@@ -504,12 +532,13 @@ class Content
     public function setSecurityOptions(array $options): self
     {
         $this->options['securityOptions'] = $options;
+
         return $this;
     }
 
     /**
      * Configure error handling behavior.
-     * 
+     *
      * @param array{
      *   ignoreErrors?: string[],
      *   retryOnError?: bool,
@@ -522,12 +551,13 @@ class Content
     public function setErrorHandling(array $options): self
     {
         $this->options['errorHandling'] = $options;
+
         return $this;
     }
 
     /**
      * Set performance optimization options.
-     * 
+     *
      * @param array{
      *   preconnect?: string[],
      *   prefetch?: string[],
@@ -546,12 +576,13 @@ class Content
     public function setPerformanceOptions(array $options): self
     {
         $this->options['performanceOptions'] = $options;
+
         return $this;
     }
 
     /**
      * Configure accessibility audit options.
-     * 
+     *
      * @param array{
      *   standards?: array{
      *     wcag2a?: bool,
@@ -574,12 +605,13 @@ class Content
     public function setAccessibilityAudit(array $options): self
     {
         $this->options['accessibilityAudit'] = $options;
+
         return $this;
     }
 
     /**
      * Configure performance metrics collection.
-     * 
+     *
      * @param array{
      *   timings?: array{
      *     fcp?: bool,
@@ -611,12 +643,13 @@ class Content
     public function setPerformanceMetrics(array $options): self
     {
         $this->options['performanceMetrics'] = $options;
+
         return $this;
     }
 
     /**
      * Configure browser storage management.
-     * 
+     *
      * @param array{
      *   localStorage?: array{
      *     clear?: bool,
@@ -648,12 +681,13 @@ class Content
     public function setStorageManagement(array $options): self
     {
         $this->options['storageManagement'] = $options;
+
         return $this;
     }
 
     /**
      * Configure geolocation emulation.
-     * 
+     *
      * @param array{
      *   latitude: float,
      *   longitude: float,
@@ -669,12 +703,13 @@ class Content
     public function setGeolocation(array $options): self
     {
         $this->options['geolocation'] = $options;
+
         return $this;
     }
 
     /**
      * Configure browser permissions.
-     * 
+     *
      * @param array{
      *   permissions?: array{
      *     name: 'geolocation'|'notifications'|'camera'|'microphone'|'background-sync'|'sensors'|'clipboard',
@@ -689,6 +724,7 @@ class Content
     public function setPermissions(array $options): self
     {
         $this->options['permissions'] = $options;
+
         return $this;
     }
 
@@ -704,7 +740,7 @@ class Content
         try {
             $request = new Request(
                 'POST',
-                $this->buildQueryString($this->client->url() . '/content?token=' . $this->client->token()),
+                $this->buildQueryString($this->client->url().'/content?token='.$this->client->token()),
                 [
                     'Content-Type' => 'application/json',
                 ],
@@ -726,8 +762,8 @@ class Content
      */
     protected function validateOptions(): void
     {
-        if (!isset($this->options['url']) && !isset($this->options['html'])) {
+        if (! isset($this->options['url']) && ! isset($this->options['html'])) {
             throw ContentException::invalidOptions('Either URL or HTML content must be provided');
         }
     }
-} 
+}

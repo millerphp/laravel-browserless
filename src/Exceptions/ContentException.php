@@ -19,4 +19,4 @@ class ContentException extends BrowserlessException
     {
         return new self("Invalid content options: {$message}");
     }
-} 
+}

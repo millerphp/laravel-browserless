@@ -19,4 +19,4 @@ class ScreenshotException extends BrowserlessException
     {
         return new self("Invalid screenshot options: {$message}");
     }
-} 
+}

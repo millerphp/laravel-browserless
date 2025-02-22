@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace MillerPHP\LaravelBrowserless\Responses;
 
-use Psr\Http\Message\ResponseInterface;
 use MillerPHP\LaravelBrowserless\Exceptions\MetricsException;
+use Psr\Http\Message\ResponseInterface;
 
 class MetricsResponse
 {
@@ -33,6 +33,7 @@ class MetricsResponse
      * Get the metrics data as an array.
      *
      * @return array<array<string,mixed>>
+     *
      * @throws MetricsException
      */
     public function data(): array
@@ -41,7 +42,7 @@ class MetricsResponse
             try {
                 $this->data = json_decode($this->content(), true, 512, JSON_THROW_ON_ERROR);
             } catch (\JsonException $e) {
-                throw MetricsException::invalidResponse('Response is not valid JSON: ' . $e->getMessage());
+                throw MetricsException::invalidResponse('Response is not valid JSON: '.$e->getMessage());
             }
         }
 
@@ -56,7 +57,8 @@ class MetricsResponse
     public function latest(): ?array
     {
         $data = $this->data();
-        return !empty($data) ? $data[0] : null;
+
+        return ! empty($data) ? $data[0] : null;
     }
 
     /**
@@ -82,4 +84,4 @@ class MetricsResponse
     {
         return $this->response;
     }
-} 
+}

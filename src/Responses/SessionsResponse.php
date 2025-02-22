@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace MillerPHP\LaravelBrowserless\Responses;
 
-use Psr\Http\Message\ResponseInterface;
 use MillerPHP\LaravelBrowserless\Exceptions\SessionsException;
+use Psr\Http\Message\ResponseInterface;
 
 class SessionsResponse
 {
@@ -33,6 +33,7 @@ class SessionsResponse
      * Get all sessions data.
      *
      * @return array<array<string,mixed>>
+     *
      * @throws SessionsException
      */
     public function data(): array
@@ -41,7 +42,7 @@ class SessionsResponse
             try {
                 $this->data = json_decode($this->content(), true, 512, JSON_THROW_ON_ERROR);
             } catch (\JsonException $e) {
-                throw SessionsException::invalidResponse('Response is not valid JSON: ' . $e->getMessage());
+                throw SessionsException::invalidResponse('Response is not valid JSON: '.$e->getMessage());
             }
         }
 
@@ -55,7 +56,7 @@ class SessionsResponse
      */
     public function running(): array
     {
-        return array_filter($this->data(), fn($session) => $session['running'] ?? false);
+        return array_filter($this->data(), fn ($session) => $session['running'] ?? false);
     }
 
     /**
@@ -97,4 +98,4 @@ class SessionsResponse
     {
         return $this->response;
     }
-} 
+}

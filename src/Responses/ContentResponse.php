@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace MillerPHP\LaravelBrowserless\Responses;
 
-use Psr\Http\Message\ResponseInterface;
 use MillerPHP\LaravelBrowserless\Exceptions\ContentException;
+use Psr\Http\Message\ResponseInterface;
 
 class ContentResponse
 {
@@ -33,7 +33,7 @@ class ContentResponse
     {
         try {
             $result = file_put_contents($path, $this->content());
-            
+
             if ($result === false) {
                 throw new \RuntimeException("Failed to save content to {$path}");
             }
@@ -67,4 +67,4 @@ class ContentResponse
     {
         return $this->response;
     }
-} 
+}

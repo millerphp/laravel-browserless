@@ -12,9 +12,9 @@ class BQLException extends \Exception
     public static function fromResponse(\Throwable $e): self
     {
         return new self(
-            'BQL query failed: ' . $e->getMessage(),
+            'BQL query failed: '.$e->getMessage(),
             (int) $e->getCode(),
             $e
         );
     }
-} 
+}

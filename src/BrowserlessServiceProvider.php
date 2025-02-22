@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 namespace MillerPHP\LaravelBrowserless;
 
 use Illuminate\Support\ServiceProvider;
