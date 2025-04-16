@@ -132,6 +132,8 @@ class PDF
 
     /**
      * Set PDF encryption options.
+     *
+     * @param  array<string,bool>  $permissions
      */
     public function encryption(?string $userPassword = null, ?string $ownerPassword = null, array $permissions = []): self
     {

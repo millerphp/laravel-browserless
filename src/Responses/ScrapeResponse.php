@@ -77,7 +77,9 @@ class ScrapeResponse
     }
 
     /**
-     * @deprecated Use results() without a parameter instead
+     * Get all results from the scrape.
+     *
+     * @return array<string,mixed>
      */
     public function allResults(): array
     {

@@ -74,7 +74,8 @@ class Browserless implements ClientContract
         protected readonly string $apiToken,
         protected readonly string $url,
         ?ClientInterface $client = null,
-        array $options = []
+        /** @var array<string,mixed> */
+        protected array $options = []
     ) {
         if (empty($this->apiToken)) {
             throw new BrowserlessException('API token is required');
@@ -479,6 +480,9 @@ class Browserless implements ClientContract
 
     /**
      * Send a request to the Browserless API
+     *
+     * @param  array<string,mixed>  $data
+     * @return array<string,mixed>
      */
     protected function sendRequest(string $endpoint, array $data = []): array
     {

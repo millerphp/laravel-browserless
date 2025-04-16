@@ -16,7 +16,9 @@ class Logger
     }
 
     /**
-     * Log a request
+     * Log a request to the Browserless API.
+     *
+     * @param  array<string,mixed>  $data
      */
     public static function logRequest(string $endpoint, array $data): void
     {
@@ -38,9 +40,9 @@ class Logger
     }
 
     /**
-     * Log a response
+     * Log a response from the Browserless API.
      */
-    public static function logResponse(string $endpoint, $response): void
+    public static function logResponse(string $endpoint, mixed $response): void
     {
         if (! self::isEnabled() || ! Config::get('browserless.logging.log_responses', true)) {
             return;
@@ -82,7 +84,9 @@ class Logger
     }
 
     /**
-     * Log performance metrics
+     * Log performance metrics.
+     *
+     * @param  array<string,mixed>  $metrics
      */
     public static function logPerformance(string $endpoint, array $metrics): void
     {
@@ -102,7 +106,10 @@ class Logger
     }
 
     /**
-     * Mask sensitive data in the request/response
+     * Mask sensitive data in the log.
+     *
+     * @param  array<string,mixed>  $data
+     * @return array<string,mixed>
      */
     private static function maskSensitiveData(array $data): array
     {
