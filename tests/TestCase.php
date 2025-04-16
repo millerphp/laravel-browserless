@@ -3,9 +3,9 @@
 namespace MillerPHP\LaravelBrowserless\Tests;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Orchestra\Testbench\TestCase as Orchestra;
 use MillerPHP\LaravelBrowserless\BrowserlessServiceProvider;
 use Mockery;
+use Orchestra\Testbench\TestCase as Orchestra;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -51,6 +51,7 @@ class TestCase extends Orchestra
         $response->shouldReceive('getBody->__toString')->andReturn(json_encode($data));
         $response->shouldReceive('getBody')->andReturn($response);
         $response->shouldReceive('getContents')->andReturn(json_encode($data));
+
         return $response;
     }
 }

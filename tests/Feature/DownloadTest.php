@@ -16,6 +16,7 @@ it('can execute download code', function () {
     $this->client->shouldReceive('send')
         ->withArgs(function (RequestInterface $request) use ($code) {
             $body = json_decode($request->getBody()->getContents(), true);
+
             return $request->getMethod() === 'POST' &&
                    $request->getUri()->getPath() === '/download' &&
                    $body['code'] === $code;
@@ -38,6 +39,7 @@ it('can set context values', function () {
     $this->client->shouldReceive('send')
         ->withArgs(function (RequestInterface $request) use ($context) {
             $body = json_decode($request->getBody()->getContents(), true);
+
             return $body['context'] === $context;
         })
         ->andReturn(test()->mockResponse(['data' => '']));
@@ -54,6 +56,7 @@ it('can wait for network idle', function () {
     $this->client->shouldReceive('send')
         ->withArgs(function (RequestInterface $request) {
             $body = json_decode($request->getBody()->getContents(), true);
+
             return $body['gotoOptions']['waitUntil'] === 'networkidle0';
         })
         ->andReturn(test()->mockResponse(['data' => '']));
@@ -70,6 +73,7 @@ it('can set timeout', function () {
     $this->client->shouldReceive('send')
         ->withArgs(function (RequestInterface $request) {
             $body = json_decode($request->getBody()->getContents(), true);
+
             return $body['timeout'] === 30000;
         })
         ->andReturn(test()->mockResponse(['data' => '']));
@@ -87,6 +91,7 @@ it('can set authentication', function () {
         ->withArgs(function (RequestInterface $request) {
             $body = json_decode($request->getBody()->getContents(), true);
             $auth = $body['authenticate'];
+
             return $auth['username'] === 'user' && $auth['password'] === 'pass';
         })
         ->andReturn(test()->mockResponse(['data' => '']));
@@ -103,6 +108,7 @@ it('can ignore HTTPS errors', function () {
     $this->client->shouldReceive('send')
         ->withArgs(function (RequestInterface $request) {
             $body = json_decode($request->getBody()->getContents(), true);
+
             return $body['ignoreHTTPSErrors'] === true;
         })
         ->andReturn(test()->mockResponse(['data' => '']));
@@ -137,6 +143,7 @@ it('can combine multiple options', function () {
     $this->client->shouldReceive('send')
         ->withArgs(function (RequestInterface $request) use ($code, $context) {
             $body = json_decode($request->getBody()->getContents(), true);
+
             return $body['code'] === $code &&
                    $body['context'] === $context &&
                    $body['timeout'] === 30000 &&
@@ -205,4 +212,4 @@ it('can handle large file downloads', function () {
 
     expect(strlen($result->data()))
         ->toBe(strlen($largeData));
-}); 
+});

@@ -17,28 +17,33 @@ class BQL
     use HasQueryParameters;
 
     /**
-     * The options for the BQL query.
-     *
-     * @var array<string,mixed>
-     */
-    protected array $options = [
-        'query' => '',
-        'variables' => [],
-        'operationName' => null,
-    ];
-
-    /**
      * Create a new BQL instance.
      */
     public function __construct(
         protected readonly ClientContract $client
-    ) {}
+    ) {
+        $this->options = [
+            'query' => '',
+            'variables' => [],
+            'operationName' => null,
+        ];
+    }
 
     /**
      * Set the GraphQL query.
      */
     public function query(string $query): self
     {
+        // Ensure the query starts with 'mutation' or 'query'
+        if (! preg_match('/^(mutation|query)\s+/i', $query)) {
+            $query = 'mutation '.$query;
+        }
+
+        // Ensure proper newlines and indentation
+        $query = str_replace(["\r\n", "\r"], "\n", $query);
+        $query = preg_replace('/\n\s*\n/', "\n", $query); // Remove empty lines
+        $query = trim($query);
+
         $this->options['query'] = $query;
 
         return $this;
@@ -57,11 +62,20 @@ class BQL
     }
 
     /**
-     * Set the operation name.
+     * Set the operation name for the query.
      */
     public function operationName(?string $name): self
     {
         $this->options['operationName'] = $name;
+
+        // If the query doesn't have an operation name, add it
+        if ($name && ! str_contains($this->options['query'], $name)) {
+            $this->options['query'] = preg_replace(
+                '/^(mutation|query)\s+/i',
+                '$1 '.$name.' ',
+                $this->options['query']
+            );
+        }
 
         return $this;
     }
@@ -114,6 +128,26 @@ class BQL
     public function timeout(int $milliseconds): self
     {
         $this->addQueryParameter('timeout', (string) $milliseconds);
+
+        return $this;
+    }
+
+    /**
+     * Enable block consent modals.
+     */
+    public function blockConsentModals(bool $enabled = true): self
+    {
+        $this->addQueryParameter('blockConsentModals', $enabled ? 'true' : 'false');
+
+        return $this;
+    }
+
+    /**
+     * Set wait until condition.
+     */
+    public function waitUntil(string $condition): self
+    {
+        $this->addQueryParameter('waitUntil', $condition);
 
         return $this;
     }

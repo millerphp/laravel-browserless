@@ -60,49 +60,6 @@ trait HasOptions
     }
 
     /**
-     * Add script tags to inject.
-     *
-     * @param  array{url?: string, path?: string, content?: string, type?: string, id?: string}  $script
-     */
-    public function addScriptTag(array $script): self
-    {
-        if (! isset($this->options['addScriptTag'])) {
-            $this->options['addScriptTag'] = [];
-        }
-        $this->options['addScriptTag'][] = $script;
-
-        return $this;
-    }
-
-    /**
-     * Add style tags to inject.
-     *
-     * @param  array{url?: string, path?: string, content?: string}  $style
-     */
-    public function addStyleTag(array $style): self
-    {
-        if (! isset($this->options['addStyleTag'])) {
-            $this->options['addStyleTag'] = [];
-        }
-        $this->options['addStyleTag'][] = $style;
-
-        return $this;
-    }
-
-    /**
-     * Set HTTP authentication.
-     */
-    public function authenticate(string $username, string $password): self
-    {
-        $this->options['authenticate'] = [
-            'username' => $username,
-            'password' => $password,
-        ];
-
-        return $this;
-    }
-
-    /**
      * Add patterns to reject requests.
      *
      * @param  string[]  $patterns
@@ -139,25 +96,6 @@ trait HasOptions
             $this->options['requestInterceptors'] = [];
         }
         $this->options['requestInterceptors'][] = $interceptor;
-
-        return $this;
-    }
-
-    /**
-     * Set viewport dimensions and properties.
-     *
-     * @param array{
-     *   width: int,
-     *   height: int,
-     *   deviceScaleFactor?: float,
-     *   isMobile?: bool,
-     *   isLandscape?: bool,
-     *   hasTouch?: bool
-     * } $viewport
-     */
-    public function viewport(array $viewport): self
-    {
-        $this->options['viewport'] = $viewport;
 
         return $this;
     }
@@ -279,34 +217,13 @@ trait HasOptions
     }
 
     /**
-     * Set cookies for the page.
-     *
-     * @param array{
-     *   name: string,
-     *   value: string,
-     *   domain?: string,
-     *   path?: string,
-     *   expires?: int,
-     *   httpOnly?: bool,
-     *   secure?: bool,
-     *   sameSite?: "Strict"|"Lax"|"None"
-     * }[] $cookies
-     */
-    public function cookies(array $cookies): self
-    {
-        $this->options['cookies'] = $cookies;
-
-        return $this;
-    }
-
-    /**
      * Emulate a specific device.
      *
      * @param  string  $name  Device name from Puppeteer's devices list (e.g., 'iPhone X')
      */
     public function emulateDevice(string $name): self
     {
-        $this->options['device'] = $name;
+        $this->options['emulateDevice'] = $name;
 
         return $this;
     }

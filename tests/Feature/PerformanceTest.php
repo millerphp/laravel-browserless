@@ -14,14 +14,15 @@ it('can analyze URL performance', function () {
     $this->client->shouldReceive('send')
         ->withArgs(function (RequestInterface $request) {
             $body = json_decode($request->getBody()->getContents(), true);
+
             return $request->getMethod() === 'POST' &&
                    $request->getUri()->getPath() === '/performance' &&
                    $body['url'] === 'https://example.com';
         })
         ->andReturn(test()->mockResponse([
             'categories' => [
-                'performance' => ['score' => 0.95]
-            ]
+                'performance' => ['score' => 0.95],
+            ],
         ]));
 
     $result = $this->performance
@@ -42,6 +43,7 @@ it('can set specific categories to analyze', function () {
     $this->client->shouldReceive('send')
         ->withArgs(function (RequestInterface $request) use ($categories) {
             $body = json_decode($request->getBody()->getContents(), true);
+
             return $body['categories'] === $categories;
         })
         ->andReturn(test()->mockResponse(['categories' => []]));
@@ -60,6 +62,7 @@ it('can set specific audits to run', function () {
     $this->client->shouldReceive('send')
         ->withArgs(function (RequestInterface $request) use ($audits) {
             $body = json_decode($request->getBody()->getContents(), true);
+
             return $body['audits'] === $audits;
         })
         ->andReturn(test()->mockResponse(['audits' => []]));
@@ -80,20 +83,20 @@ it('can handle detailed performance results', function () {
             'accessibility' => [
                 'score' => 0.88,
                 'title' => 'Accessibility',
-            ]
+            ],
         ],
         'audits' => [
             'first-contentful-paint' => [
                 'score' => 0.9,
                 'displayValue' => '1.2 s',
-                'numericValue' => 1234
+                'numericValue' => 1234,
             ],
             'largest-contentful-paint' => [
                 'score' => 0.85,
                 'displayValue' => '2.1 s',
-                'numericValue' => 2123
-            ]
-        ]
+                'numericValue' => 2123,
+            ],
+        ],
     ];
 
     $this->client->shouldReceive('url')->andReturn('https://chrome.browserless.io');
@@ -119,9 +122,9 @@ it('can set throttling options', function () {
     $throttling = [
         'throughput' => [
             'download' => 1000000,
-            'upload' => 500000
+            'upload' => 500000,
         ],
-        'latency' => 100
+        'latency' => 100,
     ];
 
     $this->client->shouldReceive('url')->andReturn('https://chrome.browserless.io');
@@ -129,6 +132,7 @@ it('can set throttling options', function () {
     $this->client->shouldReceive('send')
         ->withArgs(function (RequestInterface $request) use ($throttling) {
             $body = json_decode($request->getBody()->getContents(), true);
+
             return $body['throttling'] === $throttling;
         })
         ->andReturn(test()->mockResponse([]));
@@ -147,8 +151,8 @@ it('can set device emulation', function () {
             'width' => 375,
             'height' => 812,
             'deviceScaleFactor' => 3,
-            'isMobile' => true
-        ]
+            'isMobile' => true,
+        ],
     ];
 
     $this->client->shouldReceive('url')->andReturn('https://chrome.browserless.io');
@@ -156,6 +160,7 @@ it('can set device emulation', function () {
     $this->client->shouldReceive('send')
         ->withArgs(function (RequestInterface $request) use ($device) {
             $body = json_decode($request->getBody()->getContents(), true);
+
             return $body['device'] === $device;
         })
         ->andReturn(test()->mockResponse([]));
@@ -191,6 +196,7 @@ it('can combine multiple options', function () {
     $this->client->shouldReceive('send')
         ->withArgs(function (RequestInterface $request) use ($categories, $audits, $throttling) {
             $body = json_decode($request->getBody()->getContents(), true);
+
             return $body['url'] === 'https://example.com' &&
                    $body['categories'] === $categories &&
                    $body['audits'] === $audits &&
@@ -239,7 +245,7 @@ it('can get all category scores', function () {
         'performance' => ['score' => 0.95],
         'accessibility' => ['score' => 0.88],
         'best-practices' => ['score' => 1.0],
-        'seo' => ['score' => 0.92]
+        'seo' => ['score' => 0.92],
     ];
 
     $this->client->shouldReceive('url')->andReturn('https://chrome.browserless.io');
@@ -257,4 +263,4 @@ it('can get all category scores', function () {
         ->toBe(0.95)
         ->and($result->categoryScore('seo'))
         ->toBe(0.92);
-}); 
+});

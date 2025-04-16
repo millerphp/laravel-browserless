@@ -8,9 +8,9 @@ beforeEach(function () {
         'data' => [
             'goto' => [
                 'status' => 200,
-                'content' => '<html></html>'
-            ]
-        ]
+                'content' => '<html></html>',
+            ],
+        ],
     ]);
     $this->response = new BQLResponse($this->mockResponse);
 });
@@ -48,8 +48,8 @@ it('can detect and retrieve errors', function () {
     $errorResponse = new BQLResponse(test()->mockResponse([
         'errors' => [
             ['message' => 'GraphQL error'],
-            ['message' => 'Validation error']
-        ]
+            ['message' => 'Validation error'],
+        ],
     ]));
 
     expect($errorResponse->hasErrors())
@@ -88,14 +88,14 @@ it('can handle nested data structures', function () {
             'multi' => [
                 'page1' => [
                     'goto' => ['status' => 200],
-                    'evaluate' => ['value' => '{"items":[1,2,3]}']
+                    'evaluate' => ['value' => '{"items":[1,2,3]}'],
                 ],
                 'page2' => [
                     'goto' => ['status' => 200],
-                    'evaluate' => ['value' => '{"items":[4,5,6]}']
-                ]
-            ]
-        ]
+                    'evaluate' => ['value' => '{"items":[4,5,6]}'],
+                ],
+            ],
+        ],
     ]));
 
     expect($complexResponse->get('data.multi.page1.goto.status'))
@@ -110,9 +110,9 @@ it('safely handles null values in response', function () {
             'result' => null,
             'meta' => [
                 'nullValue' => null,
-                'validValue' => 'test'
-            ]
-        ]
+                'validValue' => 'test',
+            ],
+        ],
     ]));
 
     expect($nullResponse->get('data.result'))
@@ -128,13 +128,13 @@ it('preserves boolean values in response', function () {
         'data' => [
             'flags' => [
                 'isValid' => true,
-                'isError' => false
-            ]
-        ]
+                'isError' => false,
+            ],
+        ],
     ]));
 
     expect($booleanResponse->get('data.flags.isValid'))
         ->toBeTrue()
         ->and($booleanResponse->get('data.flags.isError'))
         ->toBeFalse();
-}); 
+});

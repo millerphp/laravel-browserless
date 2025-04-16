@@ -41,16 +41,33 @@ class ScrapeResponse
     }
 
     /**
-     * Get the results for a specific element selector.
+     * Get the results for a specific element selector or all results if no selector is provided.
      *
      * @return array<mixed>
      *
      * @throws ScrapeException
      */
-    public function results(string $selector): array
+    public function results(?string $selector = null): array
     {
         $data = $this->data();
-        foreach ($data['results'] ?? [] as $result) {
+
+        // Debug the data we're working with
+        \Log::debug('ScrapeResponse Data', [
+            'raw_data' => $data,
+            'selector' => $selector,
+            'data_key_exists' => isset($data['data']),
+            'results_key_exists' => isset($data['results']),
+            'data_structure' => array_keys($data),
+        ]);
+
+        // Get the results array, handling both possible structures
+        $results = $data['data'] ?? $data['results'] ?? [];
+
+        if ($selector === null) {
+            return $results;
+        }
+
+        foreach ($results as $result) {
             if ($result['selector'] === $selector) {
                 return $result['results'];
             }
@@ -60,15 +77,11 @@ class ScrapeResponse
     }
 
     /**
-     * Get all scraped results.
-     *
-     * @return array<array{selector: string, results: array<mixed>}>
-     *
-     * @throws ScrapeException
+     * @deprecated Use results() without a parameter instead
      */
     public function allResults(): array
     {
-        return $this->data()['results'] ?? [];
+        return $this->results();
     }
 
     /**

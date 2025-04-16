@@ -54,9 +54,48 @@ class PerformanceResponse
      */
     public function categoryScore(string $category): ?float
     {
-        $data = $this->data();
+        try {
+            $data = $this->data();
 
-        return $data['categories'][$category]['score'] ?? null;
+            // Debug the data we're working with
+            \Log::debug('PerformanceResponse Category Score', [
+                'category' => $category,
+                'raw_data' => $data,
+                'categories_exists' => isset($data['categories']),
+                'category_exists' => isset($data['categories'][$category]),
+                'category_data' => $data['categories'][$category] ?? null,
+                'data_structure' => array_keys($data),
+            ]);
+
+            // Handle both direct category access and data.categories structure
+            if (isset($data['categories'][$category]['score'])) {
+                return (float) $data['categories'][$category]['score'];
+            }
+
+            if (isset($data['data']['categories'][$category]['score'])) {
+                return (float) $data['data']['categories'][$category]['score'];
+            }
+
+            // Check for legacy format
+            if (isset($data['lighthouseResult']['categories'][$category]['score'])) {
+                return (float) $data['lighthouseResult']['categories'][$category]['score'];
+            }
+
+            \Log::warning('Category score not found', [
+                'category' => $category,
+                'available_categories' => array_keys($data['categories'] ?? $data['data']['categories'] ?? []),
+            ]);
+
+            return null;
+        } catch (\Throwable $e) {
+            \Log::error('Error getting category score', [
+                'category' => $category,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return null;
+        }
     }
 
     /**
@@ -66,14 +105,41 @@ class PerformanceResponse
      */
     public function categoryScores(): array
     {
-        $scores = [];
-        $data = $this->data();
+        try {
+            $scores = [];
+            $data = $this->data();
 
-        foreach ($data['categories'] ?? [] as $category => $info) {
-            $scores[$category] = $info['score'];
+            // Debug the data we're working with
+            \Log::debug('PerformanceResponse Category Scores', [
+                'raw_data' => $data,
+                'categories_exists' => isset($data['categories']),
+                'data_structure' => array_keys($data),
+            ]);
+
+            // Handle both direct category access and data.categories structure
+            $categories = $data['categories'] ?? $data['data']['categories'] ?? $data['lighthouseResult']['categories'] ?? [];
+
+            foreach ($categories as $category => $info) {
+                if (isset($info['score'])) {
+                    $scores[$category] = (float) $info['score'];
+                }
+            }
+
+            if (empty($scores)) {
+                \Log::warning('No category scores found', [
+                    'available_categories' => array_keys($categories),
+                ]);
+            }
+
+            return $scores;
+        } catch (\Throwable $e) {
+            \Log::error('Error getting category scores', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return [];
         }
-
-        return $scores;
     }
 
     /**
@@ -83,9 +149,31 @@ class PerformanceResponse
      */
     public function audit(string $auditId): ?array
     {
-        $data = $this->data();
+        try {
+            $data = $this->data();
 
-        return $data['audits'][$auditId] ?? null;
+            // Handle both direct audit access and data.audits structure
+            $audit = $data['audits'][$auditId] ??
+                    $data['data']['audits'][$auditId] ??
+                    $data['lighthouseResult']['audits'][$auditId] ?? null;
+
+            if ($audit === null) {
+                \Log::warning('Audit not found', [
+                    'audit_id' => $auditId,
+                    'available_audits' => array_keys($data['audits'] ?? $data['data']['audits'] ?? []),
+                ]);
+            }
+
+            return $audit;
+        } catch (\Throwable $e) {
+            \Log::error('Error getting audit', [
+                'audit_id' => $auditId,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return null;
+        }
     }
 
     /**
@@ -95,7 +183,77 @@ class PerformanceResponse
      */
     public function audits(): array
     {
-        return $this->data()['audits'] ?? [];
+        $data = $this->data();
+
+        // Handle both direct audit access and data.audits structure
+        return $data['audits'] ?? $data['data']['audits'] ?? [];
+    }
+
+    /**
+     * Get the performance metrics.
+     *
+     * @return array<string,mixed>
+     */
+    public function metrics(): array
+    {
+        $data = $this->data();
+        $metrics = [];
+
+        // Get core web vitals and other important metrics
+        $importantMetrics = [
+            'first-contentful-paint',
+            'largest-contentful-paint',
+            'total-blocking-time',
+            'cumulative-layout-shift',
+            'speed-index',
+            'interactive',
+        ];
+
+        foreach ($importantMetrics as $metric) {
+            $audit = $this->audit($metric);
+            if ($audit) {
+                $metrics[$metric] = [
+                    'score' => $audit['score'] ?? null,
+                    'value' => $audit['numericValue'] ?? null,
+                    'unit' => $audit['numericUnit'] ?? null,
+                    'displayValue' => $audit['displayValue'] ?? null,
+                ];
+            }
+        }
+
+        return $metrics;
+    }
+
+    /**
+     * Get the performance score.
+     */
+    public function performanceScore(): ?float
+    {
+        return $this->categoryScore('performance');
+    }
+
+    /**
+     * Get the accessibility score.
+     */
+    public function accessibilityScore(): ?float
+    {
+        return $this->categoryScore('accessibility');
+    }
+
+    /**
+     * Get the best practices score.
+     */
+    public function bestPracticesScore(): ?float
+    {
+        return $this->categoryScore('best-practices');
+    }
+
+    /**
+     * Get the SEO score.
+     */
+    public function seoScore(): ?float
+    {
+        return $this->categoryScore('seo');
     }
 
     /**

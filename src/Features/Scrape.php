@@ -18,7 +18,6 @@ class Scrape
      */
     protected array $options = [
         'elements' => [],
-        'gotoOptions' => [], // For page.goto options
     ];
 
     /**
@@ -26,7 +25,9 @@ class Scrape
      */
     public function __construct(
         protected readonly ClientContract $client
-    ) {}
+    ) {
+        $this->options['gotoOptions'] = new \stdClass;
+    }
 
     /**
      * Set the URL to scrape.
@@ -53,15 +54,12 @@ class Scrape
 
     /**
      * Add an element to scrape.
-     *
-     * @param  array<string,mixed>  $options
      */
-    public function element(string $selector, array $options = []): self
+    public function element(string $selector): self
     {
-        $this->options['elements'][] = array_merge(
-            ['selector' => $selector],
-            $options
-        );
+        $this->options['elements'][] = [
+            'selector' => $selector,
+        ];
 
         return $this;
     }
@@ -162,16 +160,32 @@ class Scrape
         $this->validateOptions();
 
         try {
+            $payload = json_encode($this->options, JSON_THROW_ON_ERROR);
+
+            // Debug the request payload
+            \Log::debug('Browserless Scrape Request', [
+                'url' => $this->client->url().'/scrape?token='.$this->client->token(),
+                'payload' => $this->options,
+            ]);
+
             $request = new Request(
                 'POST',
                 $this->client->url().'/scrape?token='.$this->client->token(),
                 [
                     'Content-Type' => 'application/json',
                 ],
-                json_encode($this->options, JSON_THROW_ON_ERROR)
+                $payload
             );
 
-            return new ScrapeResponse($this->client->send($request));
+            $response = $this->client->send($request);
+
+            // Debug the response
+            \Log::debug('Browserless Scrape Response', [
+                'status' => $response->getStatusCode(),
+                'body' => (string) $response->getBody(),
+            ]);
+
+            return new ScrapeResponse($response);
         } catch (\JsonException $e) {
             throw ScrapeException::fromResponse($e);
         } catch (\Throwable $e) {

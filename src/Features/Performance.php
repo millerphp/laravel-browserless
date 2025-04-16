@@ -79,17 +79,32 @@ class Performance
         $this->validateOptions();
 
         try {
+            $payload = json_encode($this->options, JSON_THROW_ON_ERROR);
+
+            // Debug the request payload
+            \Log::debug('Browserless Performance Request', [
+                'url' => $this->client->url().'/performance?token='.$this->client->token(),
+                'payload' => $this->options,
+            ]);
+
             $request = new Request(
                 'POST',
                 $this->client->url().'/performance?token='.$this->client->token(),
                 [
                     'Content-Type' => 'application/json',
-                    'Cache-Control' => 'no-cache',
                 ],
-                json_encode($this->options, JSON_THROW_ON_ERROR)
+                $payload
             );
 
-            return new PerformanceResponse($this->client->send($request));
+            $response = $this->client->send($request);
+
+            // Debug the response
+            \Log::debug('Browserless Performance Response', [
+                'status' => $response->getStatusCode(),
+                'body' => (string) $response->getBody(),
+            ]);
+
+            return new PerformanceResponse($response);
         } catch (\JsonException $e) {
             throw PerformanceException::fromResponse($e);
         } catch (\Throwable $e) {

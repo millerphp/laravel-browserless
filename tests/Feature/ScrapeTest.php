@@ -14,6 +14,7 @@ it('can scrape content from URL', function () {
     $this->client->shouldReceive('send')
         ->withArgs(function (RequestInterface $request) {
             $body = json_decode($request->getBody()->getContents(), true);
+
             return $request->getMethod() === 'POST' &&
                    $request->getUri()->getPath() === '/scrape' &&
                    $body['url'] === 'https://example.com';
@@ -40,6 +41,7 @@ it('can scrape content from HTML', function () {
     $this->client->shouldReceive('send')
         ->withArgs(function (RequestInterface $request) use ($html) {
             $body = json_decode($request->getBody()->getContents(), true);
+
             return $body['html'] === $html;
         })
         ->andReturn(test()->mockResponse(['results' => []]));
@@ -51,16 +53,8 @@ it('can scrape content from HTML', function () {
 
 it('can add elements to scrape', function () {
     $elements = [
-        [
-            'selector' => 'h1',
-            'text' => true
-        ],
-        [
-            'selector' => '.product',
-            'text' => true,
-            'html' => true,
-            'attributes' => ['id', 'class']
-        ]
+        ['selector' => 'h1'],
+        ['selector' => '.product'],
     ];
 
     $this->client->shouldReceive('url')->andReturn('https://chrome.browserless.io');
@@ -68,18 +62,15 @@ it('can add elements to scrape', function () {
     $this->client->shouldReceive('send')
         ->withArgs(function (RequestInterface $request) use ($elements) {
             $body = json_decode($request->getBody()->getContents(), true);
+
             return $body['elements'] === $elements;
         })
         ->andReturn(test()->mockResponse(['results' => []]));
 
     $this->scrape
         ->url('https://example.com')
-        ->element('h1', ['text' => true])
-        ->element('.product', [
-            'text' => true,
-            'html' => true,
-            'attributes' => ['id', 'class']
-        ])
+        ->element('h1')
+        ->element('.product')
         ->send();
 });
 
@@ -89,6 +80,7 @@ it('can wait for timeout', function () {
     $this->client->shouldReceive('send')
         ->withArgs(function (RequestInterface $request) {
             $body = json_decode($request->getBody()->getContents(), true);
+
             return $body['waitForTimeout'] === 5000;
         })
         ->andReturn(test()->mockResponse(['results' => []]));
@@ -105,9 +97,10 @@ it('can wait for selector', function () {
     $this->client->shouldReceive('url')->andReturn('https://chrome.browserless.io');
     $this->client->shouldReceive('token')->andReturn('test-token');
     $this->client->shouldReceive('send')
-        ->withArgs(function (RequestInterface $request) use ($options) {
+        ->withArgs(function (RequestInterface $request) {
             $body = json_decode($request->getBody()->getContents(), true);
             $waitFor = $body['waitForSelector'];
+
             return $waitFor['selector'] === '.content' &&
                    $waitFor['timeout'] === 5000 &&
                    $waitFor['visible'] === true;
@@ -129,6 +122,7 @@ it('can wait for function', function () {
         ->withArgs(function (RequestInterface $request) use ($function) {
             $body = json_decode($request->getBody()->getContents(), true);
             $waitFor = $body['waitForFunction'];
+
             return $waitFor['fn'] === $function && $waitFor['timeout'] === 5000;
         })
         ->andReturn(test()->mockResponse(['results' => []]));
@@ -146,6 +140,7 @@ it('can wait for event', function () {
         ->withArgs(function (RequestInterface $request) {
             $body = json_decode($request->getBody()->getContents(), true);
             $event = $body['waitForEvent'];
+
             return $event['event'] === 'load' && $event['timeout'] === 5000;
         })
         ->andReturn(test()->mockResponse(['results' => []]));
@@ -175,19 +170,27 @@ it('can handle complex scraping results', function () {
     $results = [
         [
             'selector' => 'h1',
-            'text' => 'Main Title',
-            'html' => '<h1>Main Title</h1>',
-            'attributes' => ['id' => 'title']
+            'results' => [
+                [
+                    'text' => 'Main Title',
+                    'html' => '<h1>Main Title</h1>',
+                    'attributes' => ['id' => 'title'],
+                ],
+            ],
         ],
         [
             'selector' => '.product',
-            'text' => 'Product Name',
-            'html' => '<div class="product">Product Name</div>',
-            'attributes' => [
-                'id' => 'product-1',
-                'class' => 'product featured'
-            ]
-        ]
+            'results' => [
+                [
+                    'text' => 'Product Name',
+                    'html' => '<div class="product">Product Name</div>',
+                    'attributes' => [
+                        'id' => 'product-1',
+                        'class' => 'product featured',
+                    ],
+                ],
+            ],
+        ],
     ];
 
     $this->client->shouldReceive('url')->andReturn('https://chrome.browserless.io');
@@ -197,8 +200,8 @@ it('can handle complex scraping results', function () {
 
     $result = $this->scrape
         ->url('https://example.com')
-        ->element('h1', ['text' => true, 'html' => true, 'attributes' => ['id']])
-        ->element('.product', ['text' => true, 'html' => true, 'attributes' => ['id', 'class']])
+        ->element('h1')
+        ->element('.product')
         ->send();
 
     expect($result->results())
@@ -239,6 +242,7 @@ it('can handle pagination scraping', function () {
     $this->client->shouldReceive('send')
         ->withArgs(function (RequestInterface $request) use ($code) {
             $body = json_decode($request->getBody()->getContents(), true);
+
             return $body['evaluateFunction'] === $code;
         })
         ->andReturn(test()->mockResponse(['results' => []]));
@@ -255,6 +259,7 @@ it('can combine multiple options', function () {
     $this->client->shouldReceive('send')
         ->withArgs(function (RequestInterface $request) {
             $body = json_decode($request->getBody()->getContents(), true);
+
             return $body['url'] === 'https://example.com' &&
                    count($body['elements']) === 2 &&
                    $body['waitForTimeout'] === 5000 &&
@@ -264,8 +269,8 @@ it('can combine multiple options', function () {
 
     $this->scrape
         ->url('https://example.com')
-        ->element('h1', ['text' => true])
-        ->element('.product', ['text' => true])
+        ->element('h1')
+        ->element('.product')
         ->waitForTimeout(5000)
         ->waitForSelector('.content')
         ->send();
@@ -275,7 +280,7 @@ it('can filter results by selector', function () {
     $results = [
         ['selector' => 'h1', 'text' => 'Title 1'],
         ['selector' => 'h1', 'text' => 'Title 2'],
-        ['selector' => '.product', 'text' => 'Product']
+        ['selector' => '.product', 'text' => 'Product'],
     ];
 
     $this->client->shouldReceive('url')->andReturn('https://chrome.browserless.io');
@@ -285,12 +290,12 @@ it('can filter results by selector', function () {
 
     $result = $this->scrape
         ->url('https://example.com')
-        ->element('h1', ['text' => true])
-        ->element('.product', ['text' => true])
+        ->element('h1')
+        ->element('.product')
         ->send();
 
     expect($result->results('h1'))
         ->toHaveCount(2)
         ->and($result->results('.product'))
         ->toHaveCount(1);
-}); 
+});

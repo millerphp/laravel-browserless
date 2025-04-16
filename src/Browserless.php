@@ -7,9 +7,11 @@ namespace MillerPHP\LaravelBrowserless;
 use Http\Client\Common\Plugin;
 use Http\Client\Common\PluginClient;
 use Http\Discovery\Psr18ClientDiscovery;
+use Illuminate\Support\Facades\Http;
 use MillerPHP\LaravelBrowserless\Contracts\ClientContract;
 use MillerPHP\LaravelBrowserless\Exceptions\BrowserlessException;
 use MillerPHP\LaravelBrowserless\Exceptions\ClientSetupException;
+use MillerPHP\LaravelBrowserless\Features\BQL;
 use MillerPHP\LaravelBrowserless\Features\Config;
 use MillerPHP\LaravelBrowserless\Features\Content;
 use MillerPHP\LaravelBrowserless\Features\Download;
@@ -304,7 +306,10 @@ class Browserless implements ClientContract
     }
 
     /**
-     * Create a new Performance instance.
+     * Create a new Performance instance for analyzing page performance.
+     * This method allows for more granular control over the performance analysis.
+     *
+     * @return \MillerPHP\LaravelBrowserless\Performance
      */
     public function performance(): Performance
     {
@@ -461,5 +466,75 @@ class Browserless implements ClientContract
         $this->globalOptions['waitForInitialPage'] = $wait;
 
         return $this;
+    }
+
+    /**
+     * Create a new BQL instance.
+     */
+    public function bql(): BQL
+    {
+        return new BQL($this);
+    }
+
+    /**
+     * Send a request to the Browserless API
+     */
+    protected function sendRequest(string $endpoint, array $data = []): array
+    {
+        try {
+            Logger::logRequest($endpoint, $data);
+
+            $response = Http::withHeaders([
+                'Cache-Control' => 'no-cache',
+                'Content-Type' => 'application/json',
+            ])
+                ->withToken($this->apiToken)
+                ->post($this->url.$endpoint, $data);
+
+            Logger::logResponse($endpoint, $response->json());
+
+            if ($response->failed()) {
+                throw new \Exception($response->json()['message'] ?? 'Unknown error occurred');
+            }
+
+            return $response->json();
+        } catch (\Throwable $e) {
+            Logger::logError($endpoint, $e);
+            throw $e;
+        }
+    }
+
+    /**
+     * Get performance metrics for a URL.
+     * This is a convenience method that provides a simpler way to get performance metrics.
+     *
+     * @param  string  $url  The URL to analyze
+     * @return \MillerPHP\LaravelBrowserless\Responses\PerformanceResponse
+     *
+     * @throws \Exception If the performance analysis fails
+     */
+    public function getPerformanceMetrics(string $url): PerformanceResponse
+    {
+        try {
+            Logger::info('Starting performance analysis', ['url' => $url]);
+
+            $response = $this->sendRequest('/performance', [
+                'url' => $url,
+            ]);
+
+            Logger::info('Performance analysis completed', [
+                'url' => $url,
+                'response' => $response,
+            ]);
+
+            return new PerformanceResponse($response);
+        } catch (\Exception $e) {
+            Logger::error('Performance analysis failed', [
+                'url' => $url,
+                'error' => $e->getMessage(),
+            ]);
+
+            throw $e;
+        }
     }
 }

@@ -18,7 +18,7 @@
     "require": {
         "php": "^8.2",
         "spatie/laravel-package-tools": "^1.16",
-        "illuminate/contracts": "^10.0||^11.0",
+        "illuminate/contracts": "^10.0||^11.0||^12.0",
         "php-http/client-common": "^2.0",
         "php-http/discovery": "^1.0",
         "psr/http-client": "^1.0",
@@ -54,9 +54,11 @@
         }
     },
     "scripts": {
-        "post-autoload-dump": "@composer run prepare",
-        "prepare": "@php vendor/bin/testbench package:discover --ansi",
-        "analyse": "vendor/bin/phpstan analyse",
+        "post-autoload-dump": [
+            "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
+            "@php -r \"if (file_exists('artisan')) { @passthru('php artisan package:discover --ansi'); }\""
+        ],
+        "analyse": "vendor/bin/phpstan analyse --memory-limit=2G",
         "test": "vendor/bin/pest",
         "test-coverage": "vendor/bin/pest --coverage",
         "format": "vendor/bin/pint"
@@ -72,10 +74,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "MillerPHP\\LaravelBrowserless\\LaravelBrowserlessServiceProvider"
+                "MillerPHP\\LaravelBrowserless\\BrowserlessServiceProvider"
             ],
             "aliases": {
-                "LaravelBrowserless": "MillerPHP\\LaravelBrowserless\\Facades\\LaravelBrowserless"
+                "LaravelBrowserless": "MillerPHP\\LaravelBrowserless\\Facades\\Browserless"
             }
         }
     },

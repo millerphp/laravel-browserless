@@ -14,6 +14,7 @@ it('can generate PDF from URL', function () {
     $this->client->shouldReceive('send')
         ->withArgs(function (RequestInterface $request) {
             $body = json_decode($request->getBody()->getContents(), true);
+
             return $request->getMethod() === 'POST' &&
                    $request->getUri()->getPath() === '/pdf' &&
                    $body['url'] === 'https://example.com';
@@ -36,6 +37,7 @@ it('can generate PDF from HTML content', function () {
     $this->client->shouldReceive('send')
         ->withArgs(function (RequestInterface $request) use ($html) {
             $body = json_decode($request->getBody()->getContents(), true);
+
             return $body['html'] === $html;
         })
         ->andReturn(test()->mockResponse(['success' => true]));
@@ -51,6 +53,7 @@ it('can set paper format', function () {
     $this->client->shouldReceive('send')
         ->withArgs(function (RequestInterface $request) {
             $body = json_decode($request->getBody()->getContents(), true);
+
             return $body['options']['format'] === 'A4';
         })
         ->andReturn(test()->mockResponse(['success' => true]));
@@ -67,6 +70,7 @@ it('can set landscape mode', function () {
     $this->client->shouldReceive('send')
         ->withArgs(function (RequestInterface $request) {
             $body = json_decode($request->getBody()->getContents(), true);
+
             return $body['options']['landscape'] === true;
         })
         ->andReturn(test()->mockResponse(['success' => true]));
@@ -84,6 +88,7 @@ it('can set margins', function () {
         ->withArgs(function (RequestInterface $request) {
             $body = json_decode($request->getBody()->getContents(), true);
             $margins = $body['options']['margin'];
+
             return $margins['top'] === 1 &&
                    $margins['right'] === 2 &&
                    $margins['bottom'] === 1 &&
@@ -103,6 +108,7 @@ it('can enable print background', function () {
     $this->client->shouldReceive('send')
         ->withArgs(function (RequestInterface $request) {
             $body = json_decode($request->getBody()->getContents(), true);
+
             return $body['options']['printBackground'] === true;
         })
         ->andReturn(test()->mockResponse(['success' => true]));
@@ -122,6 +128,7 @@ it('can set header and footer templates', function () {
     $this->client->shouldReceive('send')
         ->withArgs(function (RequestInterface $request) use ($header, $footer) {
             $body = json_decode($request->getBody()->getContents(), true);
+
             return $body['options']['displayHeaderFooter'] === true &&
                    $body['options']['headerTemplate'] === $header &&
                    $body['options']['footerTemplate'] === $footer;
@@ -142,6 +149,7 @@ it('can set page ranges', function () {
     $this->client->shouldReceive('send')
         ->withArgs(function (RequestInterface $request) {
             $body = json_decode($request->getBody()->getContents(), true);
+
             return $body['options']['pageRanges'] === '1-5, 8, 11-13';
         })
         ->andReturn(test()->mockResponse(['success' => true]));
@@ -158,6 +166,7 @@ it('can set scale', function () {
     $this->client->shouldReceive('send')
         ->withArgs(function (RequestInterface $request) {
             $body = json_decode($request->getBody()->getContents(), true);
+
             return $body['options']['scale'] === 0.8;
         })
         ->andReturn(test()->mockResponse(['success' => true]));
@@ -180,7 +189,7 @@ it('can set PDF metadata', function () {
     $metadata = [
         'title' => 'Test Document',
         'author' => 'Test Author',
-        'subject' => 'Test Subject'
+        'subject' => 'Test Subject',
     ];
 
     $this->client->shouldReceive('url')->andReturn('https://chrome.browserless.io');
@@ -188,6 +197,7 @@ it('can set PDF metadata', function () {
     $this->client->shouldReceive('send')
         ->withArgs(function (RequestInterface $request) use ($metadata) {
             $body = json_decode($request->getBody()->getContents(), true);
+
             return $body['options']['metadata'] === $metadata;
         })
         ->andReturn(test()->mockResponse(['success' => true]));
@@ -204,6 +214,7 @@ it('can enable tagged PDF', function () {
     $this->client->shouldReceive('send')
         ->withArgs(function (RequestInterface $request) {
             $body = json_decode($request->getBody()->getContents(), true);
+
             return $body['options']['tagged'] === true;
         })
         ->andReturn(test()->mockResponse(['success' => true]));
@@ -220,6 +231,7 @@ it('can set compression level', function () {
     $this->client->shouldReceive('send')
         ->withArgs(function (RequestInterface $request) {
             $body = json_decode($request->getBody()->getContents(), true);
+
             return $body['options']['compressionLevel'] === 9;
         })
         ->andReturn(test()->mockResponse(['success' => true]));
@@ -245,6 +257,7 @@ it('can set encryption options', function () {
         ->withArgs(function (RequestInterface $request) {
             $body = json_decode($request->getBody()->getContents(), true);
             $encryption = $body['options']['encryption'];
+
             return $encryption['userPassword'] === 'user123' &&
                    $encryption['ownerPassword'] === 'owner123' &&
                    $encryption['permissions'] === ['printing'];
@@ -263,6 +276,7 @@ it('can combine multiple options', function () {
     $this->client->shouldReceive('send')
         ->withArgs(function (RequestInterface $request) {
             $body = json_decode($request->getBody()->getContents(), true);
+
             return $body['url'] === 'https://example.com' &&
                    $body['options']['format'] === 'A4' &&
                    $body['options']['landscape'] === true &&
@@ -283,4 +297,4 @@ it('can combine multiple options', function () {
 it('validates required options before sending', function () {
     expect(fn () => $this->pdf->send())
         ->toThrow(InvalidArgumentException::class, 'Either URL or HTML content must be provided');
-}); 
+});

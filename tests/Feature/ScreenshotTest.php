@@ -14,6 +14,7 @@ it('can take screenshot from URL', function () {
     $this->client->shouldReceive('send')
         ->withArgs(function (RequestInterface $request) {
             $body = json_decode($request->getBody()->getContents(), true);
+
             return $request->getMethod() === 'POST' &&
                    $request->getUri()->getPath() === '/screenshot' &&
                    $body['url'] === 'https://example.com';
@@ -36,6 +37,7 @@ it('can take screenshot from HTML content', function () {
     $this->client->shouldReceive('send')
         ->withArgs(function (RequestInterface $request) use ($html) {
             $body = json_decode($request->getBody()->getContents(), true);
+
             return $body['html'] === $html;
         })
         ->andReturn(test()->mockResponse(['success' => true]));
@@ -51,6 +53,7 @@ it('can set screenshot type', function () {
     $this->client->shouldReceive('send')
         ->withArgs(function (RequestInterface $request) {
             $body = json_decode($request->getBody()->getContents(), true);
+
             return $body['options']['type'] === 'jpeg';
         })
         ->andReturn(test()->mockResponse(['success' => true]));
@@ -72,6 +75,7 @@ it('can set quality', function () {
     $this->client->shouldReceive('send')
         ->withArgs(function (RequestInterface $request) {
             $body = json_decode($request->getBody()->getContents(), true);
+
             return $body['options']['quality'] === 80;
         })
         ->andReturn(test()->mockResponse(['success' => true]));
@@ -97,6 +101,7 @@ it('can enable full page screenshot', function () {
     $this->client->shouldReceive('send')
         ->withArgs(function (RequestInterface $request) {
             $body = json_decode($request->getBody()->getContents(), true);
+
             return $body['options']['fullPage'] === true;
         })
         ->andReturn(test()->mockResponse(['success' => true]));
@@ -108,20 +113,24 @@ it('can enable full page screenshot', function () {
 });
 
 it('can set clip area', function () {
-    $clip = ['x' => 0, 'y' => 0, 'width' => 1920, 'height' => 1080];
-
     $this->client->shouldReceive('url')->andReturn('https://chrome.browserless.io');
     $this->client->shouldReceive('token')->andReturn('test-token');
     $this->client->shouldReceive('send')
-        ->withArgs(function (RequestInterface $request) use ($clip) {
+        ->withArgs(function (RequestInterface $request) {
             $body = json_decode($request->getBody()->getContents(), true);
-            return $body['options']['clip'] === $clip;
+
+            return $body['options']['clip'] === [
+                'x' => 0,
+                'y' => 0,
+                'width' => 1920,
+                'height' => 1080,
+            ];
         })
         ->andReturn(test()->mockResponse(['success' => true]));
 
     $this->screenshot
         ->url('https://example.com')
-        ->clip($clip)
+        ->clip(x: 0, y: 0, width: 1920, height: 1080)
         ->send();
 });
 
@@ -132,6 +141,7 @@ it('can set viewport', function () {
         ->withArgs(function (RequestInterface $request) {
             $body = json_decode($request->getBody()->getContents(), true);
             $viewport = $body['viewport'];
+
             return $viewport['width'] === 1920 &&
                    $viewport['height'] === 1080 &&
                    $viewport['deviceScaleFactor'] === 2;
@@ -150,6 +160,7 @@ it('can emulate device', function () {
     $this->client->shouldReceive('send')
         ->withArgs(function (RequestInterface $request) {
             $body = json_decode($request->getBody()->getContents(), true);
+
             return $body['options']['deviceName'] === 'iPhone X';
         })
         ->andReturn(test()->mockResponse(['success' => true]));
@@ -166,6 +177,7 @@ it('can set encoding', function () {
     $this->client->shouldReceive('send')
         ->withArgs(function (RequestInterface $request) {
             $body = json_decode($request->getBody()->getContents(), true);
+
             return $body['encoding'] === 'base64';
         })
         ->andReturn(test()->mockResponse(['success' => true]));
@@ -190,6 +202,7 @@ it('can set optimization options', function () {
     $this->client->shouldReceive('send')
         ->withArgs(function (RequestInterface $request) use ($jpegOptions, $pngOptions) {
             $body = json_decode($request->getBody()->getContents(), true);
+
             return $body['jpegOptimization'] === $jpegOptions &&
                    $body['pngOptimization'] === $pngOptions;
         })
@@ -206,7 +219,7 @@ it('can capture specific element', function () {
     $options = [
         'selector' => '.header',
         'padding' => 10,
-        'scrollIntoView' => true
+        'scrollIntoView' => true,
     ];
 
     $this->client->shouldReceive('url')->andReturn('https://chrome.browserless.io');
@@ -214,6 +227,7 @@ it('can capture specific element', function () {
     $this->client->shouldReceive('send')
         ->withArgs(function (RequestInterface $request) use ($options) {
             $body = json_decode($request->getBody()->getContents(), true);
+
             return $body['elementScreenshot'] === $options;
         })
         ->andReturn(test()->mockResponse(['success' => true]));
@@ -235,6 +249,7 @@ it('can combine multiple options', function () {
     $this->client->shouldReceive('send')
         ->withArgs(function (RequestInterface $request) {
             $body = json_decode($request->getBody()->getContents(), true);
+
             return $body['url'] === 'https://example.com' &&
                    $body['options']['type'] === 'jpeg' &&
                    $body['options']['quality'] === 80 &&
@@ -250,4 +265,4 @@ it('can combine multiple options', function () {
         ->fullPage()
         ->encoding('base64')
         ->send();
-}); 
+});

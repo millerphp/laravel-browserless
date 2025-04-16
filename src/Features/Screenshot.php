@@ -25,18 +25,27 @@ class Screenshot
      *
      * @var array<string,mixed>
      */
-    protected array $options = [
-        'options' => [], // For page.screenshot options
-        'gotoOptions' => [], // For page.goto options
-        'viewport' => [], // For page viewport options
-    ];
+    protected array $options = [];
 
     /**
      * Create a new Screenshot instance.
      */
     public function __construct(
         protected readonly ClientContract $client
-    ) {}
+    ) {
+        $this->options = [
+            'options' => [], // For page.screenshot options
+            'gotoOptions' => [], // For page.goto options
+            'viewport' => [
+                'width' => 800,
+                'height' => 600,
+                'deviceScaleFactor' => 1.0,
+                'isMobile' => false,
+                'hasTouch' => false,
+                'isLandscape' => false,
+            ],
+        ];
+    }
 
     /**
      * Set the HTML content to screenshot.
@@ -107,11 +116,23 @@ class Screenshot
     /**
      * Set the clip area of the page.
      *
-     * @param  array{x: float, y: float, width: float, height: float}  $clip
+     * @param  float  $x  The x-coordinate of the top-left corner of the clip area
+     * @param  float  $y  The y-coordinate of the top-left corner of the clip area
+     * @param  float  $width  The width of the clip area
+     * @param  float  $height  The height of the clip area
      */
-    public function clip(array $clip): self
-    {
-        $this->options['options']['clip'] = $clip;
+    public function clip(
+        float $x = 0,
+        float $y = 0,
+        float $width = 800,
+        float $height = 600
+    ): self {
+        $this->options['options']['clip'] = [
+            'x' => $x,
+            'y' => $y,
+            'width' => $width,
+            'height' => $height,
+        ];
 
         return $this;
     }

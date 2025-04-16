@@ -14,6 +14,7 @@ it('can unblock URL access', function () {
     $this->client->shouldReceive('send')
         ->withArgs(function (RequestInterface $request) {
             $body = json_decode($request->getBody()->getContents(), true);
+
             return $request->getMethod() === 'POST' &&
                    $request->getUri()->getPath() === '/unblock' &&
                    $body['url'] === 'https://example.com';
@@ -34,6 +35,7 @@ it('can request browser WebSocket endpoint', function () {
     $this->client->shouldReceive('send')
         ->withArgs(function (RequestInterface $request) {
             $body = json_decode($request->getBody()->getContents(), true);
+
             return $body['browserWSEndpoint'] === true;
         })
         ->andReturn(test()->mockResponse(['wsEndpoint' => 'ws://example.com']));
@@ -53,6 +55,7 @@ it('can request HTML content', function () {
     $this->client->shouldReceive('send')
         ->withArgs(function (RequestInterface $request) {
             $body = json_decode($request->getBody()->getContents(), true);
+
             return $body['content'] === true;
         })
         ->andReturn(test()->mockResponse(['content' => '<html></html>']));
@@ -68,7 +71,7 @@ it('can request HTML content', function () {
 
 it('can request cookies', function () {
     $cookies = [
-        ['name' => 'test', 'value' => 'value', 'domain' => 'example.com']
+        ['name' => 'test', 'value' => 'value', 'domain' => 'example.com'],
     ];
 
     $this->client->shouldReceive('url')->andReturn('https://chrome.browserless.io');
@@ -76,6 +79,7 @@ it('can request cookies', function () {
     $this->client->shouldReceive('send')
         ->withArgs(function (RequestInterface $request) {
             $body = json_decode($request->getBody()->getContents(), true);
+
             return $body['cookies'] === true;
         })
         ->andReturn(test()->mockResponse(['cookies' => $cookies]));
@@ -95,6 +99,7 @@ it('can request screenshot', function () {
     $this->client->shouldReceive('send')
         ->withArgs(function (RequestInterface $request) {
             $body = json_decode($request->getBody()->getContents(), true);
+
             return $body['screenshot'] === true;
         })
         ->andReturn(test()->mockResponse(['screenshot' => base64_encode('image data')]));
@@ -114,6 +119,7 @@ it('can set TTL', function () {
     $this->client->shouldReceive('send')
         ->withArgs(function (RequestInterface $request) {
             $body = json_decode($request->getBody()->getContents(), true);
+
             return $body['ttl'] === 30000;
         })
         ->andReturn(test()->mockResponse([]));
@@ -131,6 +137,7 @@ it('can wait for event', function () {
         ->withArgs(function (RequestInterface $request) {
             $body = json_decode($request->getBody()->getContents(), true);
             $event = $body['waitForEvent'];
+
             return $event['event'] === 'networkidle0' && $event['timeout'] === 5000;
         })
         ->andReturn(test()->mockResponse([]));
@@ -150,6 +157,7 @@ it('can wait for function', function () {
         ->withArgs(function (RequestInterface $request) use ($function) {
             $body = json_decode($request->getBody()->getContents(), true);
             $waitFor = $body['waitForFunction'];
+
             return $waitFor['fn'] === $function && $waitFor['timeout'] === 5000;
         })
         ->andReturn(test()->mockResponse([]));
@@ -167,6 +175,7 @@ it('can wait for selector', function () {
         ->withArgs(function (RequestInterface $request) {
             $body = json_decode($request->getBody()->getContents(), true);
             $waitFor = $body['waitForSelector'];
+
             return $waitFor['selector'] === '.content' &&
                    $waitFor['timeout'] === 5000 &&
                    $waitFor['visible'] === true;
@@ -200,6 +209,7 @@ it('can combine multiple options', function () {
     $this->client->shouldReceive('send')
         ->withArgs(function (RequestInterface $request) {
             $body = json_decode($request->getBody()->getContents(), true);
+
             return $body['url'] === 'https://example.com' &&
                    $body['content'] === true &&
                    $body['cookies'] === true &&
@@ -209,7 +219,7 @@ it('can combine multiple options', function () {
         ->andReturn(test()->mockResponse([
             'content' => '<html></html>',
             'cookies' => [],
-            'screenshot' => base64_encode('image data')
+            'screenshot' => base64_encode('image data'),
         ]));
 
     $result = $this->unblock
@@ -246,4 +256,4 @@ it('can handle empty responses', function () {
         ->toBeNull()
         ->and($result->wsEndpoint())
         ->toBeNull();
-}); 
+});

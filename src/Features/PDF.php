@@ -31,18 +31,27 @@ class PDF
      *
      * @var array<string,mixed>
      */
-    protected array $options = [
-        'options' => [], // For page.pdf options
-        'gotoOptions' => [], // For page.goto options
-        'viewport' => [], // For page viewport options
-    ];
+    protected array $options = [];
 
     /**
      * Create a new PDF instance.
      */
     public function __construct(
         protected readonly ClientContract $client
-    ) {}
+    ) {
+        $this->options = [
+            'options' => [], // For page.pdf options
+            'gotoOptions' => [], // For page.goto options
+            'viewport' => [
+                'width' => 800,
+                'height' => 600,
+                'deviceScaleFactor' => 1.0,
+                'isMobile' => false,
+                'hasTouch' => false,
+                'isLandscape' => false,
+            ],
+        ];
+    }
 
     /**
      * Set the HTML content to generate PDF from.
@@ -74,13 +83,26 @@ class PDF
 
     /**
      * Set viewport dimensions.
+     *
+     * @throws \InvalidArgumentException If width or height is not provided or invalid
      */
     public function viewport(int $width, int $height, float $deviceScaleFactor = 1.0): self
     {
+        if ($width <= 0) {
+            throw new \InvalidArgumentException('Viewport width must be greater than 0');
+        }
+
+        if ($height <= 0) {
+            throw new \InvalidArgumentException('Viewport height must be greater than 0');
+        }
+
         $this->options['viewport'] = [
             'width' => $width,
             'height' => $height,
             'deviceScaleFactor' => $deviceScaleFactor,
+            'isMobile' => false,
+            'hasTouch' => false,
+            'isLandscape' => false,
         ];
 
         return $this;

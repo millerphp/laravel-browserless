@@ -64,4 +64,4 @@ it('preserves exception trace', function () {
 
     expect($exception->getTraceAsString())
         ->not->toBeEmpty();
-}); 
+});

@@ -16,6 +16,7 @@ it('can execute JavaScript code', function () {
     $this->client->shouldReceive('send')
         ->withArgs(function (RequestInterface $request) use ($code) {
             $body = json_decode($request->getBody()->getContents(), true);
+
             return $request->getMethod() === 'POST' &&
                    $request->getUri()->getPath() === '/function' &&
                    $body['code'] === $code;
@@ -40,6 +41,7 @@ it('can set context values', function () {
     $this->client->shouldReceive('send')
         ->withArgs(function (RequestInterface $request) use ($context) {
             $body = json_decode($request->getBody()->getContents(), true);
+
             return $body['context'] === $context;
         })
         ->andReturn(test()->mockResponse(['data' => []]));
@@ -53,7 +55,7 @@ it('can set context values', function () {
 it('can set execution context options', function () {
     $options = [
         'isolateFromGlobalScope' => true,
-        'contextId' => 'test-context'
+        'contextId' => 'test-context',
     ];
 
     $this->client->shouldReceive('url')->andReturn('https://chrome.browserless.io');
@@ -61,6 +63,7 @@ it('can set execution context options', function () {
     $this->client->shouldReceive('send')
         ->withArgs(function (RequestInterface $request) use ($options) {
             $body = json_decode($request->getBody()->getContents(), true);
+
             return $body['executionContext'] === $options;
         })
         ->andReturn(test()->mockResponse(['data' => []]));
@@ -74,7 +77,7 @@ it('can set execution context options', function () {
 it('can add external modules', function () {
     $modules = [
         ['url' => 'https://esm.sh/lodash'],
-        ['url' => 'https://esm.sh/moment']
+        ['url' => 'https://esm.sh/moment'],
     ];
 
     $this->client->shouldReceive('url')->andReturn('https://chrome.browserless.io');
@@ -82,6 +85,7 @@ it('can add external modules', function () {
     $this->client->shouldReceive('send')
         ->withArgs(function (RequestInterface $request) use ($modules) {
             $body = json_decode($request->getBody()->getContents(), true);
+
             return $body['addModules'] === $modules;
         })
         ->andReturn(test()->mockResponse(['data' => []]));
@@ -98,6 +102,7 @@ it('can set evaluation timeout', function () {
     $this->client->shouldReceive('send')
         ->withArgs(function (RequestInterface $request) {
             $body = json_decode($request->getBody()->getContents(), true);
+
             return $body['evaluationTimeout'] === 5000;
         })
         ->andReturn(test()->mockResponse(['data' => []]));
@@ -130,7 +135,7 @@ it('can handle complex return values', function () {
         'boolean' => true,
         'array' => [1, 2, 3],
         'object' => ['key' => 'value'],
-        'null' => null
+        'null' => null,
     ];
 
     $this->client->shouldReceive('url')->andReturn('https://chrome.browserless.io');
@@ -161,6 +166,7 @@ it('can execute code with page interactions', function () {
     $this->client->shouldReceive('send')
         ->withArgs(function (RequestInterface $request) use ($code) {
             $body = json_decode($request->getBody()->getContents(), true);
+
             return $body['code'] === $code;
         })
         ->andReturn(test()->mockResponse(['data' => 'Search Results']));
@@ -183,6 +189,7 @@ it('can combine multiple options', function () {
     $this->client->shouldReceive('send')
         ->withArgs(function (RequestInterface $request) use ($code, $context, $modules) {
             $body = json_decode($request->getBody()->getContents(), true);
+
             return $body['code'] === $code &&
                    $body['context'] === $context &&
                    $body['addModules'] === $modules &&
@@ -216,4 +223,4 @@ it('can handle async function results', function () {
 
     expect($result->data())
         ->toBe('delayed');
-}); 
+});

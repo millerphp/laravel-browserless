@@ -27,21 +27,23 @@ class Content
     use HasViewport;
 
     /**
-     * The options for the content capture.
-     *
-     * @var array<string,mixed>
-     */
-    protected array $options = [
-        'gotoOptions' => [], // For page.goto options
-        'viewport' => [], // For page viewport options
-    ];
-
-    /**
      * Create a new Content instance.
      */
     public function __construct(
         protected readonly ClientContract $client
-    ) {}
+    ) {
+        $this->options = [
+            'gotoOptions' => [], // For page.goto options
+            'viewport' => [
+                'width' => 800,
+                'height' => 600,
+                'deviceScaleFactor' => 1.0,
+                'isMobile' => false,
+                'hasTouch' => false,
+                'isLandscape' => false,
+            ],
+        ];
+    }
 
     /**
      * Set the HTML content to process.

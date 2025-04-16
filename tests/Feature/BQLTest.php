@@ -1,8 +1,8 @@
 <?php
 
+use MillerPHP\LaravelBrowserless\Exceptions\BQLException;
 use MillerPHP\LaravelBrowserless\Features\BQL;
 use MillerPHP\LaravelBrowserless\Responses\BQLResponse;
-use MillerPHP\LaravelBrowserless\Exceptions\BQLException;
 use Psr\Http\Message\RequestInterface;
 
 beforeEach(function () {
@@ -19,6 +19,7 @@ it('can create a basic BQL query', function () {
     $this->client->shouldReceive('send')
         ->withArgs(function (RequestInterface $request) use ($query) {
             $body = json_decode($request->getBody()->getContents(), true);
+
             return $request->getMethod() === 'POST' &&
                    $request->getUri()->getPath() === '/chrome/bql' &&
                    $body['query'] === $query;
@@ -45,6 +46,7 @@ it('can set query variables', function () {
     $this->client->shouldReceive('send')
         ->withArgs(function (RequestInterface $request) use ($query, $variables) {
             $body = json_decode($request->getBody()->getContents(), true);
+
             return $body['query'] === $query && $body['variables'] === $variables;
         })
         ->andReturn(test()->mockResponse($response));
@@ -91,7 +93,7 @@ it('can enable stealth mode', function () {
 
 it('can set proxy configuration', function () {
     $proxy = 'http://proxy:8080';
-    
+
     $this->client->shouldReceive('url')->andReturn('https://chrome.browserless.io');
     $this->client->shouldReceive('token')->andReturn('test-token');
     $this->client->shouldReceive('send')
@@ -108,7 +110,7 @@ it('can set proxy configuration', function () {
 
 it('can set timeout', function () {
     $timeout = 30000;
-    
+
     $this->client->shouldReceive('url')->andReturn('https://chrome.browserless.io');
     $this->client->shouldReceive('token')->andReturn('test-token');
     $this->client->shouldReceive('send')
@@ -126,8 +128,8 @@ it('can set timeout', function () {
 it('handles GraphQL errors correctly', function () {
     $response = [
         'errors' => [
-            ['message' => 'Invalid query']
-        ]
+            ['message' => 'Invalid query'],
+        ],
     ];
 
     $this->client->shouldReceive('url')->andReturn('https://chrome.browserless.io');
@@ -185,14 +187,14 @@ it('can handle complex multi-page scraping queries', function () {
             'news' => [
                 'cnn' => [
                     'status' => 200,
-                    'articles' => ['value' => '[]']
+                    'articles' => ['value' => '[]'],
                 ],
                 'bbc' => [
                     'status' => 200,
-                    'articles' => ['value' => '[]']
-                ]
-            ]
-        ]
+                    'articles' => ['value' => '[]'],
+                ],
+            ],
+        ],
     ];
 
     $this->client->shouldReceive('url')->andReturn('https://chrome.browserless.io');
@@ -200,6 +202,7 @@ it('can handle complex multi-page scraping queries', function () {
     $this->client->shouldReceive('send')
         ->withArgs(function (RequestInterface $request) use ($query) {
             $body = json_decode($request->getBody()->getContents(), true);
+
             return $body['query'] === $query;
         })
         ->andReturn(test()->mockResponse($response));
@@ -214,4 +217,4 @@ it('can handle complex multi-page scraping queries', function () {
         ->toHaveValidData()
         ->toHaveKey('data.news.cnn.status', 200)
         ->toHaveKey('data.news.bbc.status', 200);
-}); 
+});
