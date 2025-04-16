@@ -76,4 +76,22 @@ trait HasNavigationOptions
 
         return $this;
     }
+
+    /**
+     * Set navigation options.
+     *
+     * @param  array<string>|string  $options  The navigation options or a single option
+     */
+    public function navigationOptions(array|string $options): self
+    {
+        if (is_string($options)) {
+            $this->options['navigationOptions'] = [$options];
+
+            return $this;
+        }
+
+        $this->options['navigationOptions'] = $options;
+
+        return $this;
+    }
 }

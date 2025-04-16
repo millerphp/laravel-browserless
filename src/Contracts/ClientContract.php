@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace MillerPHP\LaravelBrowserless\Contracts;
 
 use Http\Client\Common\Plugin;
-use JustSteveKing\Sdk\Exceptions\ClientSetupException;
-use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -40,7 +38,9 @@ interface ClientContract
     /**
      * Send an API Request.
      *
-     * @throws ClientSetupException|ClientExceptionInterface
+     * @throws \MillerPHP\LaravelBrowserless\Exceptions\ClientSetupException
+     * @throws \Psr\Http\Client\ClientExceptionInterface
+     * @throws \MillerPHP\LaravelBrowserless\Exceptions\BrowserlessException
      */
     public function send(RequestInterface $request): ResponseInterface;
 }

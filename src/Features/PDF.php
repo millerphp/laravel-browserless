@@ -84,22 +84,34 @@ class PDF
     /**
      * Set viewport dimensions.
      *
-     * @throws \InvalidArgumentException If width or height is not provided or invalid
+     * @param  array{width: int, height: int}|int  $width  The width in pixels or an array of dimensions
+     * @param  int|null  $height  The height in pixels (required if $width is not an array)
+     *
+     * @throws \InvalidArgumentException If dimensions are invalid
      */
-    public function viewport(int $width, int $height, float $deviceScaleFactor = 1.0): self
+    public function viewport(array|int $width, ?int $height = null): self
     {
-        if ($width <= 0) {
-            throw new \InvalidArgumentException('Viewport width must be greater than 0');
+        if (is_array($width)) {
+            $this->options['viewport'] = [
+                'width' => $width['width'],
+                'height' => $width['height'],
+                'deviceScaleFactor' => 1.0,
+                'isMobile' => false,
+                'hasTouch' => false,
+                'isLandscape' => false,
+            ];
+
+            return $this;
         }
 
-        if ($height <= 0) {
-            throw new \InvalidArgumentException('Viewport height must be greater than 0');
+        if ($height === null) {
+            throw new \InvalidArgumentException('Height is required when width is an integer');
         }
 
         $this->options['viewport'] = [
             'width' => $width,
             'height' => $height,
-            'deviceScaleFactor' => $deviceScaleFactor,
+            'deviceScaleFactor' => 1.0,
             'isMobile' => false,
             'hasTouch' => false,
             'isLandscape' => false,
@@ -274,13 +286,27 @@ class PDF
 
     /**
      * Set HTTP authentication credentials.
+     *
+     * @param  string|array{username: string, password: string}  $username  The username or an array of credentials
+     * @param  string|null  $password  The password (required if $username is not an array)
+     *
+     * @throws \InvalidArgumentException If credentials are invalid
      */
-    public function authenticate(string $username, string $password): self
+    public function authenticate(string|array $username, ?string $password = null): self
     {
-        $this->options['authenticate'] = [
-            'username' => $username,
-            'password' => $password,
-        ];
+        if (is_string($username)) {
+            if ($password === null) {
+                throw new \InvalidArgumentException('Password is required when username is a string');
+            }
+            $this->options['authentication'] = [
+                'username' => $username,
+                'password' => $password,
+            ];
+
+            return $this;
+        }
+
+        $this->options['authentication'] = $username;
 
         return $this;
     }

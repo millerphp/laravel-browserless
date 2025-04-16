@@ -9,7 +9,7 @@ trait HasQueryParameters
     /**
      * The query parameters.
      *
-     * @var array<string,string>
+     * @var array<string, string|bool>
      */
     protected array $queryParameters = [];
 

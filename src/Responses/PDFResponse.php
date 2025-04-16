@@ -45,15 +45,20 @@ class PDFResponse
     }
 
     /**
-     * Save the PDF to a file and return its path.
+     * Save the PDF to a file.
      *
-     * @throws \RuntimeException
+     * @param  string  $path  The path to save the PDF to
+     * @return bool True if the file was saved successfully
+     *
+     * @throws \RuntimeException If the file could not be saved
      */
-    public function saveAs(string $path): string
+    public function saveAs(string $path): bool
     {
-        $this->save($path);
+        if (file_put_contents($path, $this->content()) === false) {
+            throw new \RuntimeException("Could not save PDF to {$path}");
+        }
 
-        return $path;
+        return true;
     }
 
     /**

@@ -7,17 +7,28 @@ namespace MillerPHP\LaravelBrowserless\Features\Concerns;
 trait HasAuthentication
 {
     /**
-     * Set HTTP authentication credentials.
+     * Set authentication credentials.
      *
-     * @param  array{username: string, password: string}  $credentials
+     * @param  string|array{username: string, password: string}  $username  The username or an array of credentials
+     * @param  string|null  $password  The password (required if $username is not an array)
+     *
+     * @throws \InvalidArgumentException If credentials are invalid
      */
-    public function authenticate(array $credentials): self
+    public function authenticate(string|array $username, ?string $password = null): self
     {
-        if (! isset($credentials['username']) || ! isset($credentials['password'])) {
-            throw new \InvalidArgumentException('Credentials must have username and password');
+        if (is_string($username)) {
+            if ($password === null) {
+                throw new \InvalidArgumentException('Password is required when username is a string');
+            }
+            $this->options['authentication'] = [
+                'username' => $username,
+                'password' => $password,
+            ];
+
+            return $this;
         }
 
-        $this->options['authenticate'] = $credentials;
+        $this->options['authentication'] = $username;
 
         return $this;
     }

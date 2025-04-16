@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MillerPHP\LaravelBrowserless;
 
+use GuzzleHttp\Psr7\Response;
 use Http\Client\Common\Plugin;
 use Http\Client\Common\PluginClient;
 use Http\Discovery\Psr18ClientDiscovery;
@@ -308,12 +309,10 @@ class Browserless implements ClientContract
     /**
      * Create a new Performance instance for analyzing page performance.
      * This method allows for more granular control over the performance analysis.
-     *
-     * @return \MillerPHP\LaravelBrowserless\Performance
      */
-    public function performance(): Performance
+    public function performance(): Features\Performance
     {
-        return new Performance($this);
+        return new Features\Performance($this);
     }
 
     /**
@@ -412,14 +411,16 @@ class Browserless implements ClientContract
     }
 
     /**
-     * Set headless mode (true, false, or 'shell').
+     * Set headless mode.
      *
-     * @param  bool|'shell'  $mode
+     * @param  bool|'shell'  $mode  Whether to run in headless mode
+     *
+     * @throws \InvalidArgumentException If the mode is invalid
      */
     public function setHeadless(bool|string $mode): self
     {
         if (! is_bool($mode) && $mode !== 'shell') {
-            throw new BrowserlessException('Headless mode must be true, false, or "shell"');
+            throw new \InvalidArgumentException('Headless mode must be true, false, or "shell"');
         }
         $this->globalOptions['headless'] = $mode;
 
@@ -505,34 +506,41 @@ class Browserless implements ClientContract
     }
 
     /**
+     * Create a response object from raw data.
+     *
+     * @param  array<string, mixed>  $data  The raw response data
+     */
+    protected function createResponse(array $data): ResponseInterface
+    {
+        return new Response(
+            200,
+            ['Content-Type' => 'application/json'],
+            json_encode($data)
+        );
+    }
+
+    /**
      * Get performance metrics for a URL.
      * This is a convenience method that provides a simpler way to get performance metrics.
      *
      * @param  string  $url  The URL to analyze
-     * @return \MillerPHP\LaravelBrowserless\Responses\PerformanceResponse
      *
      * @throws \Exception If the performance analysis fails
      */
-    public function getPerformanceMetrics(string $url): PerformanceResponse
+    public function getPerformanceMetrics(string $url): Responses\PerformanceResponse
     {
         try {
-            Logger::info('Starting performance analysis', ['url' => $url]);
+            Logger::logRequest('performance', ['url' => $url]);
 
             $response = $this->sendRequest('/performance', [
                 'url' => $url,
             ]);
 
-            Logger::info('Performance analysis completed', [
-                'url' => $url,
-                'response' => $response,
-            ]);
+            Logger::logResponse('performance', $response);
 
-            return new PerformanceResponse($response);
+            return new Responses\PerformanceResponse($this->createResponse($response));
         } catch (\Exception $e) {
-            Logger::error('Performance analysis failed', [
-                'url' => $url,
-                'error' => $e->getMessage(),
-            ]);
+            Logger::logError('performance', $e);
 
             throw $e;
         }

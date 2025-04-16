@@ -8,34 +8,31 @@ use MillerPHP\LaravelBrowserless\Contracts\ClientContract;
 use MillerPHP\LaravelBrowserless\Exceptions\WebSocketException;
 use WebSocket\Client;
 
-class Connection
+abstract class Connection
 {
-    protected ?Client $client = null;
+    protected readonly string $endpoint;
 
-    /**
-     * Create a new WebSocket Connection instance.
-     */
+    protected ?Client $wsClient = null;
+
     public function __construct(
-        protected readonly ClientContract $browserless,
-        protected readonly string $endpoint = 'ws'
-    ) {}
+        protected readonly ClientContract $client,
+        string $endpoint
+    ) {
+        $this->endpoint = $endpoint;
+    }
 
     /**
-     * Connect to the WebSocket endpoint.
-     *
-     * @throws WebSocketException
+     * Connect to the WebSocket server.
      */
-    public function connect(): self
+    public function connect(): void
     {
         try {
-            $url = str_replace('http', 'ws', $this->browserless->url());
-            $this->client = new Client(
-                $url.'/'.$this->endpoint.'?token='.$this->browserless->token()
+            $url = str_replace('http', 'ws', $this->client->url());
+            $this->wsClient = new Client(
+                $url.'/'.$this->endpoint.'?token='.$this->client->token()
             );
-
-            return $this;
         } catch (\Throwable $e) {
-            throw WebSocketException::connectionFailed($e->getMessage());
+            throw new \RuntimeException('Failed to connect to WebSocket server: '.$e->getMessage());
         }
     }
 
@@ -46,14 +43,14 @@ class Connection
      */
     public function send(string $message): string
     {
-        if (! $this->client) {
+        if (! $this->wsClient) {
             throw WebSocketException::notConnected();
         }
 
         try {
-            $this->client->send($message);
+            $this->wsClient->send($message);
 
-            return $this->client->receive();
+            return $this->wsClient->receive();
         } catch (\Throwable $e) {
             throw WebSocketException::sendFailed($e->getMessage());
         }
@@ -64,9 +61,9 @@ class Connection
      */
     public function close(): void
     {
-        if ($this->client) {
-            $this->client->close();
-            $this->client = null;
+        if ($this->wsClient) {
+            $this->wsClient->close();
+            $this->wsClient = null;
         }
     }
 }

@@ -4,7 +4,12 @@ declare(strict_types=1);
 
 namespace MillerPHP\LaravelBrowserless\WebSocket;
 
+use MillerPHP\LaravelBrowserless\Contracts\ClientContract;
+
 class PlaywrightConnection extends Connection
 {
-    protected string $endpoint = 'playwright';
+    public function __construct(ClientContract $client)
+    {
+        parent::__construct($client, 'playwright');
+    }
 }

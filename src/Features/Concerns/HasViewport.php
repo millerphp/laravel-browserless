@@ -7,29 +7,32 @@ namespace MillerPHP\LaravelBrowserless\Features\Concerns;
 trait HasViewport
 {
     /**
-     * Set viewport dimensions and properties.
+     * Set viewport dimensions.
      *
-     * @param array{
-     *   width: int,
-     *   height: int,
-     *   deviceScaleFactor?: float,
-     *   hasTouch?: bool,
-     *   isLandscape?: bool,
-     *   isMobile?: bool
-     * } $options
+     * @param  array{width: int, height: int}|int  $width  The width in pixels or an array of dimensions
+     * @param  int|null  $height  The height in pixels (required if $width is not an array)
+     *
+     * @throws \InvalidArgumentException If dimensions are invalid
      */
-    public function viewport(array $options): self
+    public function viewport(array|int $width, ?int $height = null): self
     {
-        if (! isset($options['width']) || ! isset($options['height'])) {
-            throw new \InvalidArgumentException('Viewport must have width and height');
+        if (is_array($width)) {
+            $this->options['viewport'] = [
+                'width' => $width['width'],
+                'height' => $width['height'],
+            ];
+
+            return $this;
         }
 
-        $this->options['viewport'] = array_merge([
-            'deviceScaleFactor' => 1.0,
-            'hasTouch' => false,
-            'isLandscape' => false,
-            'isMobile' => false,
-        ], $options);
+        if ($height === null) {
+            throw new \InvalidArgumentException('Height is required when width is an integer');
+        }
+
+        $this->options['viewport'] = [
+            'width' => $width,
+            'height' => $height,
+        ];
 
         return $this;
     }
