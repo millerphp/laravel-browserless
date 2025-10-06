@@ -13,7 +13,7 @@ composer require millerphp/laravel-browserless
 2. Publish the configuration file:
 
 ```bash
-php artisan vendor:publish --provider="MillerPHP\LaravelBrowserless\ServiceProvider"
+php artisan vendor:publish --provider="MillerPHP\LaravelBrowserless\BrowserlessServiceProvider"
 ```
 
 3. Configure your environment variables in `.env`:
